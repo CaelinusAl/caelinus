@@ -59,9 +59,9 @@ export default function PlayPage() {
 
   return (
     <main style={styles.page}>
-      <div style={styles.bgOrbOne} />
-      <div style={styles.bgOrbTwo} />
-      <div style={styles.bgOrbThree} />
+      <div style={styles.bgGlowOne} />
+      <div style={styles.bgGlowTwo} />
+      <div style={styles.bgGlowThree} />
 
       <div style={styles.container}>
         <div style={styles.topbar}>
@@ -108,7 +108,7 @@ export default function PlayPage() {
           <section style={{ ...styles.card, ...styles.stageCard }}>
             <div style={styles.stageHeader}>
               <span style={styles.cardLabel}>Avatar Stage</span>
-              <span style={styles.versionText}>Caelinus v2</span>
+              <span style={styles.versionText}>Caelinus v3</span>
             </div>
 
             <div style={styles.stageArea}>
@@ -118,16 +118,125 @@ export default function PlayPage() {
               <div style={styles.avatarWrap}>
                 <div style={styles.avatarAura} />
 
-                <div style={styles.avatar}>
-                  <div style={styles.head} />
-                  <div style={styles.neck} />
-                  <div style={styles.torso} />
-                  <div style={styles.hips} />
-                  <div style={styles.legLeft} />
-                  <div style={styles.legRight} />
-                  <div style={styles.armLeft} />
-                  <div style={styles.armRight} />
-                </div>
+                <svg
+                  viewBox="0 0 360 760"
+                  style={styles.avatarSvg}
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <linearGradient id="skinGlow" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#f7dcc0" />
+                      <stop offset="100%" stopColor="#f0cfb0" />
+                    </linearGradient>
+                    <filter id="softGlow">
+                      <feGaussianBlur stdDeviation="10" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+
+                  {/* head */}
+                  <ellipse
+                    cx="180"
+                    cy="88"
+                    rx="42"
+                    ry="50"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* neck */}
+                  <rect
+                    x="166"
+                    y="128"
+                    width="28"
+                    height="26"
+                    rx="12"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* torso feminine */}
+                  <path
+                    d="M128 165
+                       C136 146, 151 140, 180 140
+                       C209 140, 224 146, 232 165
+                       C243 190, 248 222, 246 262
+                       C244 306, 235 352, 225 391
+                       C216 425, 204 447, 180 447
+                       C156 447, 144 425, 135 391
+                       C125 352, 116 306, 114 262
+                       C112 222, 117 190, 128 165Z"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* hips */}
+                  <path
+                    d="M116 392
+                       C124 372, 145 360, 180 360
+                       C215 360, 236 372, 244 392
+                       C252 414, 250 446, 238 470
+                       C226 494, 209 506, 180 506
+                       C151 506, 134 494, 122 470
+                       C110 446, 108 414, 116 392Z"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* left arm */}
+                  <path
+                    d="M112 182
+                       C96 210, 86 245, 83 292
+                       C81 325, 85 355, 95 379
+                       C102 396, 117 398, 126 386
+                       C133 375, 132 360, 126 344
+                       C120 327, 118 307, 120 281
+                       C123 245, 131 215, 145 186
+                       C149 177, 146 168, 137 164
+                       C128 160, 118 168, 112 182Z"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* right arm */}
+                  <path
+                    d="M248 182
+                       C264 210, 274 245, 277 292
+                       C279 325, 275 355, 265 379
+                       C258 396, 243 398, 234 386
+                       C227 375, 228 360, 234 344
+                       C240 327, 242 307, 240 281
+                       C237 245, 229 215, 215 186
+                       C211 177, 214 168, 223 164
+                       C232 160, 242 168, 248 182Z"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* left leg */}
+                  <path
+                    d="M151 492
+                       C145 520, 141 562, 140 622
+                       C140 669, 148 712, 161 732
+                       C171 747, 191 746, 198 730
+                       C204 717, 203 700, 198 678
+                       C191 650, 189 606, 193 545
+                       C194 521, 190 500, 180 489
+                       C171 479, 156 481, 151 492Z"
+                    fill="url(#skinGlow)"
+                  />
+
+                  {/* right leg */}
+                  <path
+                    d="M209 492
+                       C215 520, 219 562, 220 622
+                       C220 669, 212 712, 199 732
+                       C189 747, 169 746, 162 730
+                       C156 717, 157 700, 162 678
+                       C169 650, 171 606, 167 545
+                       C166 521, 170 500, 180 489
+                       C189 479, 204 481, 209 492Z"
+                    fill="url(#skinGlow)"
+                    opacity={0.98}
+                  />
+                </svg>
 
                 <img
                   src={selectedImage}
@@ -197,7 +306,7 @@ const styles: Record<string, React.CSSProperties> = {
     overflow: "hidden",
     fontFamily: "Arial, sans-serif",
   },
-  bgOrbOne: {
+  bgGlowOne: {
     position: "absolute",
     width: 520,
     height: 520,
@@ -209,7 +318,7 @@ const styles: Record<string, React.CSSProperties> = {
     transform: "translateX(-50%)",
     pointerEvents: "none",
   },
-  bgOrbTwo: {
+  bgGlowTwo: {
     position: "absolute",
     width: 420,
     height: 420,
@@ -220,7 +329,7 @@ const styles: Record<string, React.CSSProperties> = {
     right: -80,
     pointerEvents: "none",
   },
-  bgOrbThree: {
+  bgGlowThree: {
     position: "absolute",
     width: 300,
     height: 300,
@@ -395,111 +504,34 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatarWrap: {
     position: "relative",
-    width: 330,
-    height: 560,
+    width: 340,
+    height: 610,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarAura: {
     position: "absolute",
-    bottom: 70,
-    width: 180,
-    height: 180,
+    bottom: 90,
+    width: 200,
+    height: 200,
     borderRadius: "50%",
     background: "rgba(167, 205, 255, 0.14)",
-    filter: "blur(32px)",
+    filter: "blur(34px)",
   },
-  avatar: {
-    position: "relative",
-    width: 220,
-    height: 500,
-  },
-  head: {
-    position: "absolute",
-    top: 18,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 70,
-    height: 78,
-    borderRadius: "50%",
-    background: "#f2d0b0",
-  },
-  neck: {
-    position: "absolute",
-    top: 86,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 18,
-    height: 22,
-    borderRadius: 8,
-    background: "#f2d0b0",
-  },
-  torso: {
-    position: "absolute",
-    top: 102,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 110,
-    height: 210,
-    borderRadius: "60px 60px 50px 50px",
-    background: "#f2d0b0",
-  },
-  hips: {
-    position: "absolute",
-    top: 274,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 154,
-    height: 84,
-    borderRadius: 60,
-    background: "#f2d0b0",
-  },
-  legLeft: {
-    position: "absolute",
-    top: 340,
-    left: 75,
-    width: 28,
-    height: 152,
-    borderRadius: 20,
-    background: "#f2d0b0",
-  },
-  legRight: {
-    position: "absolute",
-    top: 340,
-    right: 75,
-    width: 28,
-    height: 152,
-    borderRadius: 20,
-    background: "#f2d0b0",
-  },
-  armLeft: {
-    position: "absolute",
-    top: 138,
-    left: 40,
-    width: 22,
-    height: 160,
-    borderRadius: 18,
-    background: "#f2d0b0",
-    transform: "rotate(8deg)",
-  },
-  armRight: {
-    position: "absolute",
-    top: 138,
-    right: 40,
-    width: 22,
-    height: 160,
-    borderRadius: 18,
-    background: "#f2d0b0",
-    transform: "rotate(-8deg)",
+  avatarSvg: {
+    width: 260,
+    height: 550,
+    display: "block",
+    filter: "drop-shadow(0 10px 22px rgba(0,0,0,0.18))",
   },
   bikiniImage: {
     position: "absolute",
-    top: 96,
+    top: 135,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 190,
-    maxHeight: 320,
+    width: 170,
+    maxHeight: 280,
     objectFit: "contain",
     filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.28))",
     pointerEvents: "none",
