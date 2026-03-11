@@ -4,90 +4,103 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 
 function Avatar() {
-  const skin = "#f4d4b4";
+  const skin = "#f3d4b5";
 
   return (
     <group position={[0, -0.1, 0]}>
       {/* head */}
-      <mesh position={[0, 1.45, 0]}>
-        <sphereGeometry args={[0.28, 32, 32]} />
+      <mesh position={[0, 1.5, 0]}>
+        <sphereGeometry args={[0.24, 32, 32]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* neck */}
-      <mesh position={[0, 1.1, 0]}>
-        <cylinderGeometry args={[0.08, 0.09, 0.16, 24]} />
+      <mesh position={[0, 1.2, 0]}>
+        <cylinderGeometry args={[0.06, 0.07, 0.14, 24]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
-      {/* upper torso / chest */}
-      <mesh position={[0, 0.72, 0]}>
-        <sphereGeometry args={[0.42, 32, 32]} />
+      {/* chest */}
+      <mesh position={[0, 0.82, 0]} scale={[1, 1.15, 0.72]}>
+        <sphereGeometry args={[0.33, 32, 32]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* waist */}
-      <mesh position={[0, 0.32, 0]} scale={[0.75, 1, 0.55]}>
-        <sphereGeometry args={[0.32, 32, 32]} />
+      <mesh position={[0, 0.42, 0]} scale={[0.72, 1, 0.5]}>
+        <sphereGeometry args={[0.24, 32, 32]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* hips */}
-      <mesh position={[0, -0.05, 0]} scale={[1.15, 0.9, 0.7]}>
-        <sphereGeometry args={[0.42, 32, 32]} />
+      <mesh position={[0, 0.02, 0]} scale={[1.15, 0.95, 0.7]}>
+        <sphereGeometry args={[0.34, 32, 32]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
-      {/* left arm */}
-      <mesh position={[-0.52, 0.58, 0]} rotation={[0, 0, -0.18]}>
-        <capsuleGeometry args={[0.09, 0.78, 8, 16]} />
+      {/* left arm upper */}
+      <mesh position={[-0.4, 0.82, 0]} rotation={[0, 0, -0.22]}>
+        <capsuleGeometry args={[0.07, 0.42, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
-      {/* right arm */}
-      <mesh position={[0.52, 0.58, 0]} rotation={[0, 0, 0.18]}>
-        <capsuleGeometry args={[0.09, 0.78, 8, 16]} />
+      {/* right arm upper */}
+      <mesh position={[0.4, 0.82, 0]} rotation={[0, 0, 0.22]}>
+        <capsuleGeometry args={[0.07, 0.42, 8, 16]} />
+        <meshStandardMaterial color={skin} />
+      </mesh>
+
+      {/* left arm lower */}
+      <mesh position={[-0.48, 0.42, 0]} rotation={[0, 0, -0.12]}>
+        <capsuleGeometry args={[0.06, 0.34, 8, 16]} />
+        <meshStandardMaterial color={skin} />
+      </mesh>
+
+      {/* right arm lower */}
+      <mesh position={[0.48, 0.42, 0]} rotation={[0, 0, 0.12]}>
+        <capsuleGeometry args={[0.06, 0.34, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* left thigh */}
-      <mesh position={[-0.16, -0.72, 0]} rotation={[0, 0, 0.03]}>
-        <capsuleGeometry args={[0.11, 0.82, 8, 16]} />
+      <mesh position={[-0.14, -0.48, 0]} rotation={[0, 0, 0.03]}>
+        <capsuleGeometry args={[0.09, 0.55, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* right thigh */}
-      <mesh position={[0.16, -0.72, 0]} rotation={[0, 0, -0.03]}>
-        <capsuleGeometry args={[0.11, 0.82, 8, 16]} />
+      <mesh position={[0.14, -0.48, 0]} rotation={[0, 0, -0.03]}>
+        <capsuleGeometry args={[0.09, 0.55, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* left calf */}
-      <mesh position={[-0.16, -1.42, 0]}>
-        <capsuleGeometry args={[0.09, 0.72, 8, 16]} />
+      <mesh position={[-0.14, -0.98, 0]} rotation={[0, 0, 0.01]}>
+        <capsuleGeometry args={[0.075, 0.48, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* right calf */}
-      <mesh position={[0.16, -1.42, 0]}>
-        <capsuleGeometry args={[0.09, 0.72, 8, 16]} />
+      <mesh position={[0.14, -0.98, 0]} rotation={[0, 0, -0.01]}>
+        <capsuleGeometry args={[0.075, 0.48, 8, 16]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* left foot */}
-      <mesh position={[-0.16, -1.92, 0.08]} rotation={[0.15, 0, 0]}>
-        <sphereGeometry args={[0.1, 24, 24]} />
+      <mesh position={[-0.14, -1.38, 0.07]} scale={[1.3, 0.7, 2]}>
+        <sphereGeometry args={[0.07, 24, 24]} />
         <meshStandardMaterial color={skin} />
       </mesh>
 
       {/* right foot */}
-      <mesh position={[0.16, -1.92, 0.08]} rotation={[0.15, 0, 0]}>
-        <sphereGeometry args={[0.1, 24, 24]} />
+      <mesh position={[0.14, -1.38, 0.07]} scale={[1.3, 0.7, 2]}>
+        <sphereGeometry args={[0.07, 24, 24]} />
         <meshStandardMaterial color={skin} />
       </mesh>
     </group>
   );
 }
+
 export default function PlayPage() {
   return (
     <main
