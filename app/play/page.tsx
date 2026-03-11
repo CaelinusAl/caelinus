@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 type SceneId = "beach" | "coffee" | "night" | "resort";
 type ArchetypeId =
@@ -43,6 +43,43 @@ const sceneDescriptions: Record<SceneId, string> = {
 };
 
 export default function PlayPage() {
+    useEffect(() => {
+  const canvas = document.getElementById("stars") as HTMLCanvasElement;
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d")!;
+  const stars = Array.from({ length: 120 }).map(() => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.5,
+    d: Math.random() * 0.5
+  }));
+
+  const draw = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+
+    stars.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      s.y += s.d;
+
+      if (s.y > window.innerHeight) {
+        s.y = 0;
+        s.x = Math.random() * window.innerWidth;
+      }
+    });
+
+    requestAnimationFrame(draw);
+  };
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  draw();
+}, []);
   const [selectedArchetype, setSelectedArchetype] =
     useState<ArchetypeId>("cosmic");
   const [selectedScene, setSelectedScene] = useState<SceneId>("night");
@@ -131,7 +168,11 @@ export default function PlayPage() {
         <section style={styles.mainGrid}>
           <div style={styles.leftPanel}>
             <div style={styles.panelTitle}>SELECT YOUR AVATAR</div>
-
+             <div className="avatar-stage">
+             <div className="portal"></div>
+            
+            </div>
+            
             <div style={styles.leftAmbientCard}>
               <img src={sceneSrc} alt={selectedScene} style={styles.leftAmbientImage} />
               <div style={styles.leftAmbientOverlay} />
