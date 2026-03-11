@@ -424,19 +424,19 @@ const filteredProducts = showroomProducts.filter((product) => {
         <section style={styles.mainGrid}>
           <div style={styles.leftPanel}>
             <div style={styles.panelTitle}>SELECT YOUR AVATAR</div>
-             <div className="avatarStage">
+             <div className="relative w-[380px] h-[760px] mx-auto border border-white/10 rounded-[28px] overflow-hidden">
+        <img
+           src="/play/avatars/avatar_base.png"
+           alt="Avatar Base"
+           className="absolute inset-0 w-full h-full object-contain z-10"
+        />
 
-            <img 
-              src="/play/avatars/avatar_base.png"
-              className="avatarLayer"
-          />
-
-           <img
-             src="/play/outfits/lilith_dress.png"
-             className="avatarLayer"
-          />
-
-         </div>
+        <img
+           src="/play/outfits/lilith_dress.png"
+           alt="Lilith Dress"
+           className="absolute inset-0 w-full h-full object-contain z-20"
+        />
+       </div>
             
             <div style={styles.leftAmbientCard}>
               <img src={sceneSrc} alt={selectedScene} style={styles.leftAmbientImage} />
