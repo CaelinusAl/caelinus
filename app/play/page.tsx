@@ -141,7 +141,7 @@ export default function PlayPage() {
           <Link href="/" style={styles.backLink}>
             ← UNIVERSE
           </Link>
-          <div style={styles.topbarRight}>CAELINUS PLAY V4 3D</div>
+          <div style={styles.topbarRight}>CAELINUS PLAY V4.1</div>
         </div>
 
         <section style={styles.hero}>
@@ -153,7 +153,6 @@ export default function PlayPage() {
 
           <h1 style={styles.title}>CAELINUS PLAY</h1>
           <p style={styles.subtitle}>Dress the Archetype</p>
-
           <button style={styles.enterButton}>ENTER THE PLAYGROUND</button>
         </section>
 
@@ -242,22 +241,22 @@ export default function PlayPage() {
               <div style={styles.avatarPortalMini} />
 
               <div style={styles.canvasWrap}>
-                <Canvas camera={{ position: [0, 0.9, 4.8], fov: 30 }}>
-                  <ambientLight intensity={1.2} />
-                  <directionalLight position={[2, 5, 4]} intensity={2.0} />
-                  <pointLight position={[-2, 2, 3]} intensity={1.0} color="#a8c7ff" />
+                <Canvas camera={{ position: [0, 0.75, 5.5], fov: 24 }}>
+                  <ambientLight intensity={1.15} />
+                  <directionalLight position={[2.4, 5, 4]} intensity={2.1} />
+                  <pointLight position={[-2, 2, 3]} intensity={1.0} color="#b7d0ff" />
 
-                  <Float speed={2} rotationIntensity={0.12} floatIntensity={0.22}>
-                    <FeminineAvatar skinTone={currentArchetype.skin} compact />
+                  <Float speed={2} rotationIntensity={0.08} floatIntensity={0.16}>
+                    <ElegantAvatar skinTone={currentArchetype.skin} compact />
                   </Float>
 
                   <OrbitControls
                     enablePan={false}
                     enableZoom={false}
-                    minAzimuthAngle={-0.35}
-                    maxAzimuthAngle={0.35}
-                    minPolarAngle={Math.PI / 2.2}
-                    maxPolarAngle={Math.PI / 1.9}
+                    minAzimuthAngle={-0.22}
+                    maxAzimuthAngle={0.22}
+                    minPolarAngle={Math.PI / 2.12}
+                    maxPolarAngle={Math.PI / 1.98}
                   />
                 </Canvas>
               </div>
@@ -324,22 +323,22 @@ export default function PlayPage() {
                 <div style={styles.previewPortal} />
 
                 <div style={styles.canvasWrapLarge}>
-                  <Canvas camera={{ position: [0, 0.9, 4.8], fov: 28 }}>
-                    <ambientLight intensity={1.15} />
-                    <directionalLight position={[2.2, 5, 4]} intensity={2.2} />
+                  <Canvas camera={{ position: [0, 0.72, 5.6], fov: 22 }}>
+                    <ambientLight intensity={1.1} />
+                    <directionalLight position={[2.4, 5, 4]} intensity={2.2} />
                     <pointLight position={[-2, 2, 3]} intensity={1.0} color="#c5d8ff" />
 
-                    <Float speed={2} rotationIntensity={0.1} floatIntensity={0.18}>
-                      <FeminineAvatar skinTone={currentArchetype.skin} />
+                    <Float speed={2} rotationIntensity={0.07} floatIntensity={0.14}>
+                      <ElegantAvatar skinTone={currentArchetype.skin} />
                     </Float>
 
                     <OrbitControls
                       enablePan={false}
                       enableZoom={false}
-                      minAzimuthAngle={-0.25}
-                      maxAzimuthAngle={0.25}
-                      minPolarAngle={Math.PI / 2.15}
-                      maxPolarAngle={Math.PI / 1.95}
+                      minAzimuthAngle={-0.18}
+                      maxAzimuthAngle={0.18}
+                      minPolarAngle={Math.PI / 2.1}
+                      maxPolarAngle={Math.PI / 2}
                     />
                   </Canvas>
                 </div>
@@ -367,7 +366,7 @@ export default function PlayPage() {
   );
 }
 
-function FeminineAvatar({
+function ElegantAvatar({
   skinTone,
   compact = false,
 }: {
@@ -375,89 +374,89 @@ function FeminineAvatar({
   compact?: boolean;
 }) {
   const skin = new THREE.Color(skinTone);
-  const hair = new THREE.Color("#17131d");
-  const scale = compact ? 0.88 : 1;
+  const hair = new THREE.Color("#141018");
+  const scale = compact ? 0.9 : 1;
 
   return (
-    <group scale={scale} position={[0, -1.25, 0]}>
-      <mesh position={[0, 2.15, 0]}>
-        <sphereGeometry args={[0.35, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+    <group scale={scale} position={[0, -1.45, 0]}>
+      <mesh position={[0, 2.45, 0]}>
+        <sphereGeometry args={[0.24, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0, 2.23, -0.03]} scale={[1.06, 1.18, 1.04]}>
-        <sphereGeometry args={[0.38, 48, 48]} />
-        <meshStandardMaterial color={hair} roughness={0.72} metalness={0.02} />
+      <mesh position={[0, 2.55, -0.03]} scale={[1.1, 1.35, 1.08]}>
+        <sphereGeometry args={[0.26, 48, 48]} />
+        <meshStandardMaterial color={hair} roughness={0.74} metalness={0.02} />
       </mesh>
 
-      <mesh position={[0, 1.72, 0]}>
-        <cylinderGeometry args={[0.1, 0.12, 0.22, 32]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0, 2.05, 0]}>
+        <cylinderGeometry args={[0.05, 0.06, 0.18, 28]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0, 1.1, 0]} scale={[1.0, 1.15, 0.72]}>
-        <sphereGeometry args={[0.62, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0, 1.35, 0]} scale={[0.78, 1.18, 0.54]}>
+        <sphereGeometry args={[0.52, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0, 0.2, 0]} scale={[0.66, 0.58, 0.56]}>
-        <sphereGeometry args={[0.58, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0, 0.47, 0]} scale={[0.42, 0.55, 0.36]}>
+        <sphereGeometry args={[0.52, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0, -0.55, 0]} scale={[0.98, 0.86, 0.74]}>
-        <sphereGeometry args={[0.72, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0, -0.18, 0]} scale={[0.92, 0.86, 0.56]}>
+        <sphereGeometry args={[0.54, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[-0.78, 1.02, 0]} rotation={[0, 0, -0.36]}>
-        <capsuleGeometry args={[0.12, 0.72, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[-0.58, 1.28, 0]} rotation={[0, 0, -0.42]}>
+        <capsuleGeometry args={[0.065, 0.64, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[-0.95, 0.22, 0]} rotation={[0, 0, -0.08]}>
-        <capsuleGeometry args={[0.1, 0.62, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[-0.78, 0.58, 0]} rotation={[0, 0, -0.1]}>
+        <capsuleGeometry args={[0.055, 0.58, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0.78, 1.02, 0]} rotation={[0, 0, 0.36]}>
-        <capsuleGeometry args={[0.12, 0.72, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0.58, 1.28, 0]} rotation={[0, 0, 0.42]}>
+        <capsuleGeometry args={[0.065, 0.64, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0.95, 0.22, 0]} rotation={[0, 0, 0.08]}>
-        <capsuleGeometry args={[0.1, 0.62, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0.78, 0.58, 0]} rotation={[0, 0, 0.1]}>
+        <capsuleGeometry args={[0.055, 0.58, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[-0.28, -1.45, 0]}>
-        <capsuleGeometry args={[0.13, 1.0, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[-0.2, -1.05, 0]}>
+        <capsuleGeometry args={[0.08, 1.08, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0.28, -1.45, 0]}>
-        <capsuleGeometry args={[0.13, 1.0, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0.2, -1.05, 0]}>
+        <capsuleGeometry args={[0.08, 1.08, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[-0.28, -2.42, 0]}>
-        <capsuleGeometry args={[0.11, 0.95, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[-0.2, -2.08, 0]}>
+        <capsuleGeometry args={[0.065, 0.98, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0.28, -2.42, 0]}>
-        <capsuleGeometry args={[0.11, 0.95, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0.2, -2.08, 0]}>
+        <capsuleGeometry args={[0.065, 0.98, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[-0.28, -3.02, 0.08]} rotation={[0.1, 0, 0]}>
-        <sphereGeometry args={[0.12, 24, 24]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[-0.2, -2.72, 0.08]} rotation={[0.12, 0, 0]} scale={[1.2, 0.55, 1.9]}>
+        <sphereGeometry args={[0.075, 24, 24]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
 
-      <mesh position={[0.28, -3.02, 0.08]} rotation={[0.1, 0, 0]}>
-        <sphereGeometry args={[0.12, 24, 24]} />
-        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      <mesh position={[0.2, -2.72, 0.08]} rotation={[0.12, 0, 0]} scale={[1.2, 0.55, 1.9]}>
+        <sphereGeometry args={[0.075, 24, 24]} />
+        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
       </mesh>
     </group>
   );
@@ -905,37 +904,37 @@ const styles: Record<string, React.CSSProperties> = {
   },
   bikiniLayerMini: {
     position: "absolute",
-    top: 108,
+    top: 122,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 116,
+    width: 96,
     objectFit: "contain",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
   },
   pareoLayerMini: {
     position: "absolute",
-    top: 232,
+    top: 224,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 154,
+    width: 138,
     objectFit: "contain",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
   },
   bikiniLayerLarge: {
     position: "absolute",
-    top: 118,
+    top: 138,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 132,
+    width: 108,
     objectFit: "contain",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
   },
   pareoLayerLarge: {
     position: "absolute",
-    top: 254,
+    top: 252,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 176,
+    width: 154,
     objectFit: "contain",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
   },
