@@ -32,7 +32,7 @@ const weeklyLooks: ShowroomLook[] = [
     brand: "Caelinus",
     designer: "Celine River",
     price: "$690",
-    image: "/play/showroom/look-1.jpg",
+    image: "/play/showroom/look-1.png",
     mood: "After-dark magnetic glamour",
   },
   {
@@ -41,7 +41,7 @@ const weeklyLooks: ShowroomLook[] = [
     brand: "Caelinus",
     designer: "Celine River",
     price: "$540",
-    image: "/play/showroom/look-2.jpg",
+    image: "/play/showroom/look-2.png",
     mood: "Golden softness and sea light",
   },
   {
@@ -50,7 +50,7 @@ const weeklyLooks: ShowroomLook[] = [
     brand: "Caelinus",
     designer: "Celine River",
     price: "$620",
-    image: "/play/showroom/look-3.jpg",
+    image: "/play/showroom/look-3.png",
     mood: "City goddess with cosmic calm",
   },
   {
@@ -59,7 +59,7 @@ const weeklyLooks: ShowroomLook[] = [
     brand: "Caelinus",
     designer: "Celine River",
     price: "$760",
-    image: "/play/showroom/look-4.jpg",
+    image: "/play/showroom/look-4.png",
     mood: "Luxury leisure and feminine power",
   },
 ];
