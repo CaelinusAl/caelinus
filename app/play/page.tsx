@@ -22,9 +22,15 @@ type PareoId =
   | "blue_pareo"
   | "bordo_pareo"
   | "green_pareo"
-  | "orange_pareo";
+  | "orange_pareo"
+  | "golden_pareo"
+  | "black_pareo"
+  | "silver_pareo"
+  | "white_pareo"
+  | "pink_pareo";
 
 type SceneId = "beach" | "coffee" | "night" | "resort";
+
 type ArchetypeId =
   | "light"
   | "golden"
@@ -55,6 +61,11 @@ const pareos: { id: PareoId; label: string }[] = [
   { id: "bordo_pareo", label: "Bordo Pareo" },
   { id: "green_pareo", label: "Green Pareo" },
   { id: "orange_pareo", label: "Orange Pareo" },
+  { id: "golden_pareo", label: "Golden Pareo" },
+  { id: "black_pareo", label: "Black Pareo" },
+  { id: "silver_pareo", label: "Silver Pareo" },
+  { id: "white_pareo", label: "White Pareo" },
+  { id: "pink_pareo", label: "Pink Pareo" },
 ];
 
 const scenes: { id: SceneId; label: string; sub: string }[] = [
@@ -64,7 +75,12 @@ const scenes: { id: SceneId; label: string; sub: string }[] = [
   { id: "resort", label: "Resort", sub: "Luxury" },
 ];
 
-const archetypes: { id: ArchetypeId; label: string; skin: string; glow: string }[] = [
+const archetypes: {
+  id: ArchetypeId;
+  label: string;
+  skin: string;
+  glow: string;
+}[] = [
   { id: "light", label: "Light", skin: "#f3d7bc", glow: "rgba(165,210,255,0.22)" },
   { id: "golden", label: "Golden", skin: "#d7a57a", glow: "rgba(255,208,122,0.22)" },
   { id: "dark", label: "Dark", skin: "#6d4637", glow: "rgba(190,130,255,0.18)" },
@@ -82,7 +98,8 @@ const sceneNotes: Record<SceneId, string> = {
 };
 
 export default function PlayPage() {
-  const [selectedArchetype, setSelectedArchetype] = useState<ArchetypeId>("cosmic");
+  const [selectedArchetype, setSelectedArchetype] =
+    useState<ArchetypeId>("cosmic");
   const [selectedBikini, setSelectedBikini] = useState<BikiniId>("scorpio");
   const [selectedPareo, setSelectedPareo] = useState<PareoId>("none");
   const [selectedScene, setSelectedScene] = useState<SceneId>("night");
@@ -95,17 +112,18 @@ export default function PlayPage() {
   const bikiniSrc = `/play/bikinis/${selectedBikini}.png`;
   const pareoSrc =
     selectedPareo === "none" ? "" : `/play/pareos/${selectedPareo}.png`;
+  const sceneSrc = `/play/scenes/${selectedScene}.jpg`;
 
   const stageGlow = useMemo(() => {
     switch (selectedScene) {
       case "beach":
-        return "radial-gradient(circle at center, rgba(88,194,255,0.28) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.16) 100%)";
+        return "radial-gradient(circle at center, rgba(88,194,255,0.24) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
       case "coffee":
-        return "radial-gradient(circle at center, rgba(211,159,100,0.24) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.16) 100%)";
+        return "radial-gradient(circle at center, rgba(211,159,100,0.20) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
       case "night":
-        return "radial-gradient(circle at center, rgba(117,139,255,0.28) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.16) 100%)";
+        return "radial-gradient(circle at center, rgba(117,139,255,0.24) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.24) 100%)";
       case "resort":
-        return "radial-gradient(circle at center, rgba(220,129,255,0.20) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.16) 100%)";
+        return "radial-gradient(circle at center, rgba(220,129,255,0.18) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
     }
   }, [selectedScene]);
 
@@ -120,7 +138,7 @@ export default function PlayPage() {
           <Link href="/" style={styles.backLink}>
             ← UNIVERSE
           </Link>
-          <div style={styles.topbarRight}>CAELINUS PLAY V3.1</div>
+          <div style={styles.topbarRight}>CAELINUS PLAY V3.2</div>
         </div>
 
         <section style={styles.hero}>
@@ -152,7 +170,12 @@ export default function PlayPage() {
                   }}
                 >
                   <div style={{ ...styles.archGlow, background: item.glow }} />
-                  <div style={{ ...styles.archetypeSilhouette, background: item.skin }} />
+                  <div
+                    style={{
+                      ...styles.archetypeSilhouette,
+                      background: item.skin,
+                    }}
+                  />
                   <div style={styles.archetypeLabel}>{item.label}</div>
                 </button>
               );
@@ -207,6 +230,12 @@ export default function PlayPage() {
             </div>
 
             <div style={styles.avatarStageMini}>
+              <img
+                src={sceneSrc}
+                alt={selectedScene}
+                style={styles.stageSceneImage}
+              />
+              <div style={styles.stageSceneOverlay} />
               <div style={styles.avatarPortalMini} />
               <div style={styles.avatarMiniWrap}>
                 <FashionAvatar
@@ -236,9 +265,16 @@ export default function PlayPage() {
                       ...(active ? styles.sceneCardActive : {}),
                     }}
                   >
-                    <div style={styles.sceneThumb} />
-                    <div style={styles.sceneLabel}>{scene.label}</div>
-                    <div style={styles.sceneSub}>{scene.sub}</div>
+                    <img
+                      src={`/play/scenes/${scene.id}.jpg`}
+                      alt={scene.label}
+                      style={styles.sceneCardImage}
+                    />
+                    <div style={styles.sceneImageOverlay} />
+                    <div style={styles.sceneTextWrap}>
+                      <div style={styles.sceneLabel}>{scene.label}</div>
+                      <div style={styles.sceneSub}>{scene.sub}</div>
+                    </div>
                   </button>
                 );
               })}
@@ -249,13 +285,26 @@ export default function PlayPage() {
                 {selectedBikini.toUpperCase()} ARCHETYPE AI SCENE
               </div>
 
-              <div style={{ ...styles.previewStage, background: stageGlow }}>
+              <div style={styles.previewStage}>
+                <img
+                  src={sceneSrc}
+                  alt={selectedScene}
+                  style={styles.previewSceneImage}
+                />
+                <div style={styles.previewDarkOverlay} />
+                <div
+                  style={{
+                    ...styles.previewGlowOverlay,
+                    background: stageGlow,
+                  }}
+                />
                 <div style={styles.previewPortal} />
                 <div style={styles.previewAvatarWrap}>
                   <FashionAvatar
                     skinTone={currentArchetype.skin}
                     bikiniSrc={bikiniSrc}
                     pareoSrc={pareoSrc}
+                    withHair
                   />
                 </div>
               </div>
@@ -280,11 +329,13 @@ function FashionAvatar({
   bikiniSrc,
   pareoSrc,
   compact = false,
+  withHair = false,
 }: {
   skinTone: string;
   bikiniSrc: string;
   pareoSrc?: string;
   compact?: boolean;
+  withHair?: boolean;
 }) {
   const scale = compact ? 0.82 : 1;
 
@@ -296,6 +347,8 @@ function FashionAvatar({
       }}
     >
       <div style={styles.avatarAura} />
+
+      {withHair ? <div style={styles.avatarHair} /> : null}
 
       <div style={{ ...styles.avatarHead, background: skinTone }} />
       <div style={{ ...styles.avatarNeck, background: skinTone }} />
@@ -564,11 +617,22 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.12)",
     position: "relative",
     overflow: "hidden",
-    background:
-      "radial-gradient(circle at center, rgba(112,139,255,0.20) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.14) 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  stageSceneImage: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  stageSceneOverlay: {
+    position: "absolute",
+    inset: 0,
+    background:
+      "linear-gradient(180deg, rgba(8,10,18,0.18) 0%, rgba(8,10,18,0.34) 45%, rgba(8,10,18,0.64) 100%)",
   },
   avatarPortalMini: {
     position: "absolute",
@@ -602,27 +666,42 @@ const styles: Record<string, React.CSSProperties> = {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gap: 14,
-    marginBottom: 18,
   },
   sceneCard: {
     border: "1px solid rgba(255,255,255,0.14)",
     borderRadius: 20,
     background: "rgba(255,255,255,0.05)",
     color: "white",
-    padding: 10,
+    padding: 0,
     cursor: "pointer",
     textAlign: "left",
+    overflow: "hidden",
+    position: "relative",
+    minHeight: 160,
   },
   sceneCardActive: {
-    background: "rgba(173,126,255,0.14)",
     boxShadow: "0 0 24px rgba(193,122,255,0.16)",
+    transform: "translateY(-1px)",
   },
-  sceneThumb: {
-    height: 92,
-    borderRadius: 14,
+  sceneCardImage: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  sceneImageOverlay: {
+    position: "absolute",
+    inset: 0,
     background:
-      "linear-gradient(135deg, rgba(255,194,124,0.25), rgba(89,123,255,0.18))",
-    marginBottom: 10,
+      "linear-gradient(180deg, rgba(10,12,20,0.10) 0%, rgba(10,12,20,0.34) 50%, rgba(10,12,20,0.78) 100%)",
+  },
+  sceneTextWrap: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    bottom: 14,
+    zIndex: 2,
   },
   sceneLabel: {
     fontSize: 22,
@@ -632,10 +711,11 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 4,
     fontSize: 12,
     letterSpacing: 1.4,
-    opacity: 0.66,
+    opacity: 0.8,
     textTransform: "uppercase",
   },
   previewPanel: {
+    marginTop: 18,
     border: "1px solid rgba(255,255,255,0.12)",
     borderRadius: 24,
     padding: 16,
@@ -655,6 +735,23 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 14,
+  },
+  previewSceneImage: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  previewDarkOverlay: {
+    position: "absolute",
+    inset: 0,
+    background:
+      "linear-gradient(180deg, rgba(8,10,18,0.12) 0%, rgba(8,10,18,0.30) 45%, rgba(8,10,18,0.76) 100%)",
+  },
+  previewGlowOverlay: {
+    position: "absolute",
+    inset: 0,
   },
   previewPortal: {
     position: "absolute",
@@ -708,20 +805,32 @@ const styles: Record<string, React.CSSProperties> = {
     background: "rgba(140,166,255,0.10)",
     filter: "blur(22px)",
   },
-  avatarHead: {
+  avatarHair: {
     position: "absolute",
-    top: 18,
+    top: 0,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 68,
-    height: 82,
+    width: 92,
+    height: 132,
+    borderRadius: "44px 44px 30px 30px",
+    background: "linear-gradient(180deg, #251d2d 0%, #0f0d13 100%)",
+    boxShadow: "0 14px 24px rgba(0,0,0,0.22)",
+    zIndex: 1,
+  },
+  avatarHead: {
+    position: "absolute",
+    top: 26,
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: 66,
+    height: 80,
     borderRadius: "46% 46% 42% 42%",
     boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
     zIndex: 2,
   },
   avatarNeck: {
     position: "absolute",
-    top: 94,
+    top: 102,
     left: "50%",
     transform: "translateX(-50%)",
     width: 16,
@@ -731,7 +840,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatarChest: {
     position: "absolute",
-    top: 112,
+    top: 118,
     left: "50%",
     transform: "translateX(-50%)",
     width: 104,
@@ -857,7 +966,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   bikiniLayer: {
     position: "absolute",
-    top: 138,
+    top: 144,
     left: "50%",
     transform: "translateX(-50%)",
     width: 136,
@@ -869,7 +978,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   pareoLayer: {
     position: "absolute",
-    top: 262,
+    top: 268,
     left: "50%",
     transform: "translateX(-50%)",
     width: 176,
