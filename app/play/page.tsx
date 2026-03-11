@@ -1048,21 +1048,26 @@ showroomSubtitle: {
 },
 featuredLookCard: {
   position: "relative",
-  minHeight: 420,
+  minHeight: 360,
   borderRadius: 28,
   overflow: "hidden",
   border: "1px solid rgba(255,255,255,0.12)",
   marginTop: 18,
   marginBottom: 18,
+  background: "rgba(255,255,255,0.05)",
+  boxShadow: "0 30px 80px rgba(0,0,0,0.45)",
 },
+
 featuredLookImage: {
   position: "absolute",
   inset: 0,
   width: "100%",
   height: "100%",
   objectFit: "cover",
-  objectPosition: "center 23%"
+  objectPosition: "center 18%",
+  filter: "saturate(1.05) contrast(1.02)",
 },
+
 featuredLookOverlay: {
   position: "absolute",
   inset: 0,
@@ -1161,8 +1166,8 @@ comboRail: {
 },
 comboCard: {
   position: "relative",
-  minHeight: 190,
-  borderRadius: 20,
+  minHeight: 150,
+  borderRadius: 10,
   overflow: "hidden",
   border: "1px solid rgba(255,255,255,0.10)",
   background: "rgba(255,255,255,0.05)",
