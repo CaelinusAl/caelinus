@@ -1061,6 +1061,7 @@ featuredLookImage: {
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  objectPosition: "center 23%"
 },
 featuredLookOverlay: {
   position: "absolute",
@@ -1160,7 +1161,7 @@ comboRail: {
 },
 comboCard: {
   position: "relative",
-  minHeight: 160,
+  minHeight: 190,
   borderRadius: 20,
   overflow: "hidden",
   border: "1px solid rgba(255,255,255,0.10)",
@@ -1179,6 +1180,7 @@ comboCardImage: {
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  objectPosition: "center 20%"
 },
 comboCardOverlay: {
   position: "absolute",
@@ -1194,7 +1196,7 @@ comboCardText: {
   zIndex: 2,
 },
 comboCardTitle: {
-  fontSize: 18,
+  fontSize: 16,
   lineHeight: 1.1,
   fontWeight: 700,
 },
@@ -1250,7 +1252,7 @@ productGrid: {
 },
 productCard: {
   position: "relative",
-  minHeight: 360,
+  minHeight: 420,
   borderRadius: 22,
   overflow: "hidden",
   border: "1px solid rgba(255,255,255,0.10)",
@@ -1262,6 +1264,7 @@ productImage: {
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  objectPosition: "center 18%"
 },
 productOverlay: {
   position: "absolute",
