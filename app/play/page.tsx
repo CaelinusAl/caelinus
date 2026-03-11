@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Canvas } from "@react-three/fiber";
+import { Float, OrbitControls } from "@react-three/drei";
 import { useMemo, useState } from "react";
+import * as THREE from "three";
 
 type BikiniId =
   | "aquarius"
@@ -117,7 +120,7 @@ export default function PlayPage() {
   const stageGlow = useMemo(() => {
     switch (selectedScene) {
       case "beach":
-        return "radial-gradient(circle at center, rgba(88,194,255,0.24) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
+        return "radial-gradient(circle at center, rgba(88,194,255,0.22) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
       case "coffee":
         return "radial-gradient(circle at center, rgba(211,159,100,0.20) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
       case "night":
@@ -138,7 +141,7 @@ export default function PlayPage() {
           <Link href="/" style={styles.backLink}>
             ← UNIVERSE
           </Link>
-          <div style={styles.topbarRight}>CAELINUS PLAY V3.2</div>
+          <div style={styles.topbarRight}>CAELINUS PLAY V4 3D</div>
         </div>
 
         <section style={styles.hero}>
@@ -237,13 +240,33 @@ export default function PlayPage() {
               />
               <div style={styles.stageSceneOverlay} />
               <div style={styles.avatarPortalMini} />
-              <div style={styles.avatarMiniWrap}>
-                <FashionAvatar
-                  skinTone={currentArchetype.skin}
-                  bikiniSrc={bikiniSrc}
-                  pareoSrc={pareoSrc}
-                  compact
-                />
+
+              <div style={styles.canvasWrap}>
+                <Canvas camera={{ position: [0, 0.9, 4.8], fov: 30 }}>
+                  <ambientLight intensity={1.2} />
+                  <directionalLight position={[2, 5, 4]} intensity={2.0} />
+                  <pointLight position={[-2, 2, 3]} intensity={1.0} color="#a8c7ff" />
+
+                  <Float speed={2} rotationIntensity={0.12} floatIntensity={0.22}>
+                    <FeminineAvatar skinTone={currentArchetype.skin} compact />
+                  </Float>
+
+                  <OrbitControls
+                    enablePan={false}
+                    enableZoom={false}
+                    minAzimuthAngle={-0.35}
+                    maxAzimuthAngle={0.35}
+                    minPolarAngle={Math.PI / 2.2}
+                    maxPolarAngle={Math.PI / 1.9}
+                  />
+                </Canvas>
+              </div>
+
+              <div style={styles.overlayWrapMini}>
+                <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayerMini} />
+                {pareoSrc ? (
+                  <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayerMini} />
+                ) : null}
               </div>
             </div>
 
@@ -299,13 +322,33 @@ export default function PlayPage() {
                   }}
                 />
                 <div style={styles.previewPortal} />
-                <div style={styles.previewAvatarWrap}>
-                  <FashionAvatar
-                    skinTone={currentArchetype.skin}
-                    bikiniSrc={bikiniSrc}
-                    pareoSrc={pareoSrc}
-                    withHair
-                  />
+
+                <div style={styles.canvasWrapLarge}>
+                  <Canvas camera={{ position: [0, 0.9, 4.8], fov: 28 }}>
+                    <ambientLight intensity={1.15} />
+                    <directionalLight position={[2.2, 5, 4]} intensity={2.2} />
+                    <pointLight position={[-2, 2, 3]} intensity={1.0} color="#c5d8ff" />
+
+                    <Float speed={2} rotationIntensity={0.1} floatIntensity={0.18}>
+                      <FeminineAvatar skinTone={currentArchetype.skin} />
+                    </Float>
+
+                    <OrbitControls
+                      enablePan={false}
+                      enableZoom={false}
+                      minAzimuthAngle={-0.25}
+                      maxAzimuthAngle={0.25}
+                      minPolarAngle={Math.PI / 2.15}
+                      maxPolarAngle={Math.PI / 1.95}
+                    />
+                  </Canvas>
+                </div>
+
+                <div style={styles.overlayWrapLarge}>
+                  <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayerLarge} />
+                  {pareoSrc ? (
+                    <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayerLarge} />
+                  ) : null}
                 </div>
               </div>
 
@@ -324,55 +367,99 @@ export default function PlayPage() {
   );
 }
 
-function FashionAvatar({
+function FeminineAvatar({
   skinTone,
-  bikiniSrc,
-  pareoSrc,
   compact = false,
-  withHair = false,
 }: {
   skinTone: string;
-  bikiniSrc: string;
-  pareoSrc?: string;
   compact?: boolean;
-  withHair?: boolean;
 }) {
-  const scale = compact ? 0.82 : 1;
+  const skin = new THREE.Color(skinTone);
+  const hair = new THREE.Color("#17131d");
+  const scale = compact ? 0.88 : 1;
 
   return (
-    <div
-      style={{
-        ...styles.avatarBody,
-        transform: `scale(${scale})`,
-      }}
-    >
-      <div style={styles.avatarAura} />
+    <group scale={scale} position={[0, -1.25, 0]}>
+      <mesh position={[0, 2.15, 0]}>
+        <sphereGeometry args={[0.35, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
 
-      {withHair ? <div style={styles.avatarHair} /> : null}
+      <mesh position={[0, 2.23, -0.03]} scale={[1.06, 1.18, 1.04]}>
+        <sphereGeometry args={[0.38, 48, 48]} />
+        <meshStandardMaterial color={hair} roughness={0.72} metalness={0.02} />
+      </mesh>
 
-      <div style={{ ...styles.avatarHead, background: skinTone }} />
-      <div style={{ ...styles.avatarNeck, background: skinTone }} />
-      <div style={{ ...styles.avatarChest, background: skinTone }} />
-      <div style={{ ...styles.avatarWaist, background: skinTone }} />
-      <div style={{ ...styles.avatarHips, background: skinTone }} />
+      <mesh position={[0, 1.72, 0]}>
+        <cylinderGeometry args={[0.1, 0.12, 0.22, 32]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
 
-      <div style={{ ...styles.armLeftUpper, background: skinTone }} />
-      <div style={{ ...styles.armLeftLower, background: skinTone }} />
-      <div style={{ ...styles.armRightUpper, background: skinTone }} />
-      <div style={{ ...styles.armRightLower, background: skinTone }} />
+      <mesh position={[0, 1.1, 0]} scale={[1.0, 1.15, 0.72]}>
+        <sphereGeometry args={[0.62, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
 
-      <div style={{ ...styles.legLeftUpper, background: skinTone }} />
-      <div style={{ ...styles.legRightUpper, background: skinTone }} />
-      <div style={{ ...styles.legLeftLower, background: skinTone }} />
-      <div style={{ ...styles.legRightLower, background: skinTone }} />
-      <div style={{ ...styles.footLeft, background: skinTone }} />
-      <div style={{ ...styles.footRight, background: skinTone }} />
+      <mesh position={[0, 0.2, 0]} scale={[0.66, 0.58, 0.56]}>
+        <sphereGeometry args={[0.58, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
 
-      <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayer} />
-      {pareoSrc ? (
-        <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayer} />
-      ) : null}
-    </div>
+      <mesh position={[0, -0.55, 0]} scale={[0.98, 0.86, 0.74]}>
+        <sphereGeometry args={[0.72, 48, 48]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[-0.78, 1.02, 0]} rotation={[0, 0, -0.36]}>
+        <capsuleGeometry args={[0.12, 0.72, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[-0.95, 0.22, 0]} rotation={[0, 0, -0.08]}>
+        <capsuleGeometry args={[0.1, 0.62, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[0.78, 1.02, 0]} rotation={[0, 0, 0.36]}>
+        <capsuleGeometry args={[0.12, 0.72, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[0.95, 0.22, 0]} rotation={[0, 0, 0.08]}>
+        <capsuleGeometry args={[0.1, 0.62, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[-0.28, -1.45, 0]}>
+        <capsuleGeometry args={[0.13, 1.0, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[0.28, -1.45, 0]}>
+        <capsuleGeometry args={[0.13, 1.0, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[-0.28, -2.42, 0]}>
+        <capsuleGeometry args={[0.11, 0.95, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[0.28, -2.42, 0]}>
+        <capsuleGeometry args={[0.11, 0.95, 8, 16]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[-0.28, -3.02, 0.08]} rotation={[0.1, 0, 0]}>
+        <sphereGeometry args={[0.12, 24, 24]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+
+      <mesh position={[0.28, -3.02, 0.08]} rotation={[0.1, 0, 0]}>
+        <sphereGeometry args={[0.12, 24, 24]} />
+        <meshStandardMaterial color={skin} roughness={0.65} metalness={0.05} />
+      </mesh>
+    </group>
   );
 }
 
@@ -642,6 +729,30 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.14)",
     boxShadow: "0 0 50px rgba(118,156,255,0.18)",
   },
+  canvasWrap: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 1,
+  },
+  canvasWrapLarge: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 1,
+  },
+  overlayWrapMini: {
+    position: "absolute",
+    width: 220,
+    height: 460,
+    zIndex: 3,
+    pointerEvents: "none",
+  },
+  overlayWrapLarge: {
+    position: "absolute",
+    width: 260,
+    height: 500,
+    zIndex: 3,
+    pointerEvents: "none",
+  },
   avatarMiniWrap: {
     position: "relative",
     width: 260,
@@ -792,200 +903,40 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 1.2,
     textTransform: "uppercase",
   },
-  avatarBody: {
-    position: "relative",
-    width: 220,
-    height: 560,
-    transformOrigin: "center center",
-  },
-  avatarAura: {
+  bikiniLayerMini: {
     position: "absolute",
-    inset: "120px 20px 140px 20px",
-    borderRadius: "50%",
-    background: "rgba(140,166,255,0.10)",
-    filter: "blur(22px)",
-  },
-  avatarHair: {
-    position: "absolute",
-    top: 0,
+    top: 108,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 92,
-    height: 132,
-    borderRadius: "44px 44px 30px 30px",
-    background: "linear-gradient(180deg, #251d2d 0%, #0f0d13 100%)",
-    boxShadow: "0 14px 24px rgba(0,0,0,0.22)",
-    zIndex: 1,
+    width: 116,
+    objectFit: "contain",
+    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
   },
-  avatarHead: {
+  pareoLayerMini: {
     position: "absolute",
-    top: 26,
+    top: 232,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 66,
-    height: 80,
-    borderRadius: "46% 46% 42% 42%",
-    boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
-    zIndex: 2,
+    width: 154,
+    objectFit: "contain",
+    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
   },
-  avatarNeck: {
-    position: "absolute",
-    top: 102,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 16,
-    height: 22,
-    borderRadius: 10,
-    zIndex: 2,
-  },
-  avatarChest: {
+  bikiniLayerLarge: {
     position: "absolute",
     top: 118,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 104,
-    height: 150,
-    borderRadius: "48% 48% 42% 42%",
-    boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
-    zIndex: 2,
-  },
-  avatarWaist: {
-    position: "absolute",
-    top: 236,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 62,
-    height: 52,
-    borderRadius: "44%",
-    zIndex: 2,
-  },
-  avatarHips: {
-    position: "absolute",
-    top: 272,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 130,
-    height: 102,
-    borderRadius: "46% 46% 42% 42%",
-    boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
-    zIndex: 2,
-  },
-  armLeftUpper: {
-    position: "absolute",
-    top: 132,
-    left: 34,
-    width: 22,
-    height: 100,
-    borderRadius: 20,
-    transform: "rotate(12deg)",
-    zIndex: 2,
-  },
-  armLeftLower: {
-    position: "absolute",
-    top: 222,
-    left: 40,
-    width: 18,
-    height: 86,
-    borderRadius: 20,
-    transform: "rotate(4deg)",
-    zIndex: 2,
-  },
-  armRightUpper: {
-    position: "absolute",
-    top: 132,
-    right: 34,
-    width: 22,
-    height: 100,
-    borderRadius: 20,
-    transform: "rotate(-12deg)",
-    zIndex: 2,
-  },
-  armRightLower: {
-    position: "absolute",
-    top: 222,
-    right: 40,
-    width: 18,
-    height: 86,
-    borderRadius: 20,
-    transform: "rotate(-4deg)",
-    zIndex: 2,
-  },
-  legLeftUpper: {
-    position: "absolute",
-    top: 360,
-    left: 82,
-    width: 24,
-    height: 102,
-    borderRadius: 18,
-    zIndex: 2,
-  },
-  legRightUpper: {
-    position: "absolute",
-    top: 360,
-    right: 82,
-    width: 24,
-    height: 102,
-    borderRadius: 18,
-    zIndex: 2,
-  },
-  legLeftLower: {
-    position: "absolute",
-    top: 456,
-    left: 85,
-    width: 20,
-    height: 94,
-    borderRadius: 18,
-    zIndex: 2,
-  },
-  legRightLower: {
-    position: "absolute",
-    top: 456,
-    right: 85,
-    width: 20,
-    height: 94,
-    borderRadius: 18,
-    zIndex: 2,
-  },
-  footLeft: {
-    position: "absolute",
-    top: 540,
-    left: 78,
-    width: 30,
-    height: 12,
-    borderRadius: 12,
-    zIndex: 2,
-  },
-  footRight: {
-    position: "absolute",
-    top: 540,
-    right: 78,
-    width: 30,
-    height: 12,
-    borderRadius: 12,
-    zIndex: 2,
-  },
-  bikiniLayer: {
-    position: "absolute",
-    top: 144,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 136,
-    maxHeight: 220,
+    width: 132,
     objectFit: "contain",
-    pointerEvents: "none",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
-    zIndex: 3,
   },
-  pareoLayer: {
+  pareoLayerLarge: {
     position: "absolute",
-    top: 268,
+    top: 254,
     left: "50%",
     transform: "translateX(-50%)",
     width: 176,
-    maxHeight: 232,
     objectFit: "contain",
-    pointerEvents: "none",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
-    zIndex: 4,
   },
 };
