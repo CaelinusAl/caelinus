@@ -3,6 +3,124 @@
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 
+type ShopCategory = "all" | "look" | "bikini" | "pareo" | "bag" | "heels" | "jewelry";
+
+type ShowroomLook = {
+  id: string;
+  title: string;
+  brand: string;
+  designer: string;
+  price: string;
+  image: string;
+  mood: string;
+};
+
+type ProductCard = {
+  id: string;
+  name: string;
+  brand: string;
+  designer: string;
+  category: Exclude<ShopCategory, "all" | "look">;
+  price: string;
+  image: string;
+};
+
+const weeklyLooks: ShowroomLook[] = [
+  {
+    id: "1",
+    title: "Scorpio Night Look",
+    brand: "Caelinus",
+    designer: "Celine River",
+    price: "$690",
+    image: "/play/showroom/look-1.jpg",
+    mood: "After-dark magnetic glamour",
+  },
+  {
+    id: "2",
+    title: "Solar Beach Muse",
+    brand: "Caelinus",
+    designer: "Celine River",
+    price: "$540",
+    image: "/play/showroom/look-2.jpg",
+    mood: "Golden softness and sea light",
+  },
+  {
+    id: "3",
+    title: "Cosmic Coffee Set",
+    brand: "Caelinus",
+    designer: "Celine River",
+    price: "$620",
+    image: "/play/showroom/look-3.jpg",
+    mood: "City goddess with cosmic calm",
+  },
+  {
+    id: "4",
+    title: "Resort Goddess Edition",
+    brand: "Caelinus",
+    designer: "Celine River",
+    price: "$760",
+    image: "/play/showroom/look-4.jpg",
+    mood: "Luxury leisure and feminine power",
+  },
+];
+
+const showroomProducts: ProductCard[] = [
+  {
+    id: "p1",
+    name: "Scorpio Bikini",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "bikini",
+    price: "$220",
+    image: "/play/shop/scorpio-bikini.jpg",
+  },
+  {
+    id: "p2",
+    name: "Black Pareo",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "pareo",
+    price: "$140",
+    image: "/play/shop/black-pareo.jpg",
+  },
+  {
+    id: "p3",
+    name: "Eclipse Bag",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "bag",
+    price: "$310",
+    image: "/play/shop/eclipse-bag.jpg",
+  },
+  {
+    id: "p4",
+    name: "Night Heels",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "heels",
+    price: "$280",
+    image: "/play/shop/night-heels.jpg",
+  },
+  {
+    id: "p5",
+    name: "Moonline Necklace",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "jewelry",
+    price: "$190",
+    image: "/play/shop/moonline-necklace.jpg",
+  },
+  {
+    id: "p6",
+    name: "Golden Ritual Pareo",
+    brand: "Caelinus",
+    designer: "Celine River",
+    category: "pareo",
+    price: "$155",
+    image: "/play/shop/golden-pareo.jpg",
+  },
+];
+
 type SceneId = "beach" | "coffee" | "night" | "resort";
 type ArchetypeId =
   | "light"
@@ -43,6 +161,35 @@ const sceneDescriptions: Record<SceneId, string> = {
 };
 
 export default function PlayPage() {
+    const [shopQuery, setShopQuery] = useState("");
+const [shopCategory, setShopCategory] = useState<ShopCategory>("all");
+const [featuredLookIndex, setFeaturedLookIndex] = useState(0);
+
+useEffect(() => {
+  const timer = setInterval(() => {
+    setFeaturedLookIndex((prev) => (prev + 1) % weeklyLooks.length);
+  }, 4000);
+
+  return () => clearInterval(timer);
+}, []);
+
+const featuredLook = weeklyLooks[featuredLookIndex];
+
+const filteredProducts = showroomProducts.filter((product) => {
+  const q = shopQuery.trim().toLowerCase();
+
+  const matchesQuery =
+    q === "" ||
+    product.name.toLowerCase().includes(q) ||
+    product.brand.toLowerCase().includes(q) ||
+    product.designer.toLowerCase().includes(q);
+
+  const matchesCategory =
+    shopCategory === "all" ? true : product.category === shopCategory;
+
+  return matchesQuery && matchesCategory;
+});
+
     useEffect(() => {
   const canvas = document.getElementById("stars") as HTMLCanvasElement;
   if (!canvas) return;
@@ -135,6 +282,115 @@ export default function PlayPage() {
         <section style={styles.selectBlock}>
           <div style={styles.selectTitle}>SELECT YOUR ARCHETYPE</div>
 
+          <section style={styles.showroomSection}>
+  <div style={styles.showroomHeader}>
+    <div>
+      <div style={styles.showroomEyebrow}>CAELINUS SHOWROOM</div>
+      <h2 style={styles.showroomTitle}>Shop the Universe</h2>
+      <p style={styles.showroomSubtitle}>
+        Search by brand, designer or look. Discover weekly signature combinations
+        in a living glass boutique.
+      </p>
+    </div>
+  </div>
+
+  <div style={styles.featuredLookCard}>
+    <img src={featuredLook.image} alt={featuredLook.title} style={styles.featuredLookImage} />
+    <div style={styles.featuredLookOverlay} />
+    <div style={styles.featuredLookGlow} />
+
+    <div style={styles.featuredLookContent}>
+      <div style={styles.featuredBadge}>WEEK’S SIGNATURE LOOK</div>
+      <div style={styles.featuredTitle}>{featuredLook.title}</div>
+      <div style={styles.featuredMeta}>
+        <span>{featuredLook.brand}</span>
+        <span>•</span>
+        <span>{featuredLook.designer}</span>
+      </div>
+      <p style={styles.featuredMood}>{featuredLook.mood}</p>
+      <div style={styles.featuredPrice}>{featuredLook.price}</div>
+
+      <div style={styles.featuredButtons}>
+        <button style={styles.showroomButton}>SHOP LOOK</button>
+        <button style={styles.showroomButtonSecondary}>VIEW DESIGNER</button>
+        <button style={styles.showroomButtonSecondary}>SAVE MOOD</button>
+      </div>
+    </div>
+  </div>
+
+  <div style={styles.comboRail}>
+    {weeklyLooks.map((look, index) => {
+      const active = index === featuredLookIndex;
+
+      return (
+        <button
+          key={look.id}
+          onClick={() => setFeaturedLookIndex(index)}
+          style={{
+            ...styles.comboCard,
+            ...(active ? styles.comboCardActive : {}),
+          }}
+        >
+          <img src={look.image} alt={look.title} style={styles.comboCardImage} />
+          <div style={styles.comboCardOverlay} />
+          <div style={styles.comboCardText}>
+            <div style={styles.comboCardTitle}>{look.title}</div>
+            <div style={styles.comboCardMeta}>{look.brand}</div>
+          </div>
+        </button>
+      );
+    })}
+  </div>
+
+  <div style={styles.shopToolbar}>
+    <input
+      value={shopQuery}
+      onChange={(e) => setShopQuery(e.target.value)}
+      placeholder="Search brand, designer or look..."
+      style={styles.shopSearch}
+    />
+
+    <div style={styles.shopFilters}>
+      {(["all", "bikini", "pareo", "bag", "heels", "jewelry"] as ShopCategory[]).map((item) => {
+        const active = shopCategory === item;
+        return (
+          <button
+            key={item}
+            onClick={() => setShopCategory(item)}
+            style={{
+              ...styles.shopFilterButton,
+              ...(active ? styles.shopFilterButtonActive : {}),
+            }}
+          >
+            {item.toUpperCase()}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+
+  <div style={styles.productGrid}>
+    {filteredProducts.map((product) => (
+      <div key={product.id} style={styles.productCard}>
+        <img src={product.image} alt={product.name} style={styles.productImage} />
+        <div style={styles.productOverlay} />
+
+        <div style={styles.productInfo}>
+          <div style={styles.productCategory}>{product.category.toUpperCase()}</div>
+          <div style={styles.productName}>{product.name}</div>
+          <div style={styles.productMeta}>
+            {product.brand} • {product.designer}
+          </div>
+          <div style={styles.productBottomRow}>
+            <div style={styles.productPrice}>{product.price}</div>
+            <button style={styles.productButton}>VIEW PRODUCT</button>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
           <div style={styles.archetypeRow}>
             {archetypes.map((item) => {
               const active = item.id === selectedArchetype;
@@ -168,10 +424,19 @@ export default function PlayPage() {
         <section style={styles.mainGrid}>
           <div style={styles.leftPanel}>
             <div style={styles.panelTitle}>SELECT YOUR AVATAR</div>
-             <div className="avatar-stage">
-             <div className="portal"></div>
-            
-            </div>
+             <div className="avatarStage">
+
+            <img 
+              src="/play/avatars/avatar_base.png"
+              className="avatarLayer"
+          />
+
+           <img
+             src="/play/outfits/lilith_dress.png"
+             className="avatarLayer"
+          />
+
+         </div>
             
             <div style={styles.leftAmbientCard}>
               <img src={sceneSrc} alt={selectedScene} style={styles.leftAmbientImage} />
@@ -750,4 +1015,305 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 1.2,
     textTransform: "uppercase",
   },
+  showroomSection: {
+  marginTop: 34,
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderRadius: 30,
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(16px)",
+  padding: 24,
+},
+showroomHeader: {
+  marginBottom: 18,
+},
+showroomEyebrow: {
+  fontSize: 12,
+  letterSpacing: 2.2,
+  opacity: 0.72,
+  textTransform: "uppercase",
+  marginBottom: 8,
+},
+showroomTitle: {
+  margin: 0,
+  fontSize: 38,
+  letterSpacing: 2,
+},
+showroomSubtitle: {
+  marginTop: 10,
+  marginBottom: 0,
+  maxWidth: 760,
+  opacity: 0.84,
+  lineHeight: 1.7,
+  fontSize: 15,
+},
+featuredLookCard: {
+  position: "relative",
+  minHeight: 420,
+  borderRadius: 28,
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.12)",
+  marginTop: 18,
+  marginBottom: 18,
+},
+featuredLookImage: {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+},
+featuredLookOverlay: {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(7,10,18,0.82) 0%, rgba(7,10,18,0.52) 35%, rgba(7,10,18,0.14) 100%)",
+},
+featuredLookGlow: {
+  position: "absolute",
+  left: 60,
+  top: "50%",
+  transform: "translateY(-50%)",
+  width: 380,
+  height: 380,
+  borderRadius: "50%",
+  background: "rgba(139,173,255,0.16)",
+  filter: "blur(70px)",
+},
+featuredLookContent: {
+  position: "relative",
+  zIndex: 2,
+  padding: "42px 38px",
+  maxWidth: 540,
+},
+featuredBadge: {
+  display: "inline-block",
+  border: "1px solid rgba(255,255,255,0.18)",
+  background: "rgba(255,255,255,0.07)",
+  borderRadius: 999,
+  padding: "8px 14px",
+  fontSize: 11,
+  letterSpacing: 1.8,
+  marginBottom: 16,
+},
+featuredTitle: {
+  fontSize: 42,
+  lineHeight: 1.05,
+  fontWeight: 700,
+  letterSpacing: 1.4,
+},
+featuredMeta: {
+  display: "flex",
+  gap: 10,
+  alignItems: "center",
+  marginTop: 14,
+  fontSize: 14,
+  opacity: 0.8,
+  letterSpacing: 0.8,
+},
+featuredMood: {
+  marginTop: 14,
+  marginBottom: 0,
+  fontSize: 15,
+  lineHeight: 1.7,
+  opacity: 0.88,
+  maxWidth: 420,
+},
+featuredPrice: {
+  marginTop: 18,
+  fontSize: 28,
+  fontWeight: 700,
+  letterSpacing: 1,
+},
+featuredButtons: {
+  display: "flex",
+  gap: 10,
+  flexWrap: "wrap",
+  marginTop: 18,
+},
+showroomButton: {
+  border: "1px solid rgba(255,255,255,0.18)",
+  background: "rgba(255,255,255,0.10)",
+  color: "white",
+  borderRadius: 999,
+  padding: "14px 18px",
+  cursor: "pointer",
+  fontSize: 12,
+  letterSpacing: 1.3,
+  textTransform: "uppercase",
+},
+showroomButtonSecondary: {
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(255,255,255,0.05)",
+  color: "white",
+  borderRadius: 999,
+  padding: "14px 18px",
+  cursor: "pointer",
+  fontSize: 12,
+  letterSpacing: 1.3,
+  textTransform: "uppercase",
+},
+comboRail: {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: 12,
+  marginBottom: 20,
+},
+comboCard: {
+  position: "relative",
+  minHeight: 160,
+  borderRadius: 20,
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.10)",
+  background: "rgba(255,255,255,0.05)",
+  cursor: "pointer",
+  padding: 0,
+  textAlign: "left",
+},
+comboCardActive: {
+  boxShadow: "0 0 22px rgba(134,166,255,0.22)",
+  transform: "translateY(-1px)",
+},
+comboCardImage: {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+},
+comboCardOverlay: {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(180deg, rgba(10,12,20,0.08) 0%, rgba(10,12,20,0.44) 54%, rgba(10,12,20,0.82) 100%)",
+},
+comboCardText: {
+  position: "absolute",
+  left: 14,
+  right: 14,
+  bottom: 14,
+  zIndex: 2,
+},
+comboCardTitle: {
+  fontSize: 18,
+  lineHeight: 1.1,
+  fontWeight: 700,
+},
+comboCardMeta: {
+  marginTop: 4,
+  fontSize: 12,
+  opacity: 0.76,
+  textTransform: "uppercase",
+  letterSpacing: 1.1,
+},
+shopToolbar: {
+  display: "flex",
+  gap: 14,
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+  marginBottom: 18,
+},
+shopSearch: {
+  flex: 1,
+  minWidth: 280,
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.06)",
+  color: "white",
+  borderRadius: 18,
+  padding: "14px 16px",
+  outline: "none",
+  fontSize: 14,
+},
+shopFilters: {
+  display: "flex",
+  gap: 10,
+  flexWrap: "wrap",
+},
+shopFilterButton: {
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.05)",
+  color: "white",
+  borderRadius: 999,
+  padding: "12px 14px",
+  cursor: "pointer",
+  fontSize: 11,
+  letterSpacing: 1.2,
+},
+shopFilterButtonActive: {
+  background: "rgba(143,169,255,0.16)",
+  boxShadow: "0 0 18px rgba(130,163,255,0.16)",
+},
+productGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: 16,
+},
+productCard: {
+  position: "relative",
+  minHeight: 360,
+  borderRadius: 22,
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.10)",
+  background: "rgba(255,255,255,0.05)",
+},
+productImage: {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+},
+productOverlay: {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(180deg, rgba(10,12,20,0.06) 0%, rgba(10,12,20,0.40) 52%, rgba(10,12,20,0.86) 100%)",
+},
+productInfo: {
+  position: "absolute",
+  left: 16,
+  right: 16,
+  bottom: 16,
+  zIndex: 2,
+},
+productCategory: {
+  fontSize: 11,
+  letterSpacing: 1.5,
+  opacity: 0.74,
+  textTransform: "uppercase",
+  marginBottom: 8,
+},
+productName: {
+  fontSize: 24,
+  lineHeight: 1.1,
+  fontWeight: 700,
+},
+productMeta: {
+  marginTop: 8,
+  fontSize: 13,
+  opacity: 0.78,
+  lineHeight: 1.5,
+},
+productBottomRow: {
+  marginTop: 14,
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: 12,
+},
+productPrice: {
+  fontSize: 22,
+  fontWeight: 700,
+},
+productButton: {
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(255,255,255,0.06)",
+  color: "white",
+  borderRadius: 999,
+  padding: "10px 14px",
+  cursor: "pointer",
+  fontSize: 11,
+  letterSpacing: 1.2,
+  textTransform: "uppercase",
+},
 };

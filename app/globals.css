@@ -15,13 +15,17 @@ a {
   text-decoration: none;
 }
 
-.avatar-stage{
-     position:relative;
-     width:420px;
-     height:520px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.avatarStage{
+  position:relative;
+  width:420px;
+  margin:auto;
+}
+
+.avatarLayer{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
 }
 
    .bikini{
