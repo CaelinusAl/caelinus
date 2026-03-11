@@ -1,39 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Canvas } from "@react-three/fiber";
-import { Float, OrbitControls } from "@react-three/drei";
 import { useMemo, useState } from "react";
-import * as THREE from "three";
-
-type BikiniId =
-  | "aquarius"
-  | "aries"
-  | "cancer"
-  | "capricorn"
-  | "gemini"
-  | "leo"
-  | "libra"
-  | "pisces"
-  | "sagittarius"
-  | "scorpio"
-  | "taurus"
-  | "virgo";
-
-type PareoId =
-  | "none"
-  | "blue_pareo"
-  | "bordo_pareo"
-  | "green_pareo"
-  | "orange_pareo"
-  | "golden_pareo"
-  | "black_pareo"
-  | "silver_pareo"
-  | "white_pareo"
-  | "pink_pareo";
 
 type SceneId = "beach" | "coffee" | "night" | "resort";
-
 type ArchetypeId =
   | "light"
   | "golden"
@@ -42,34 +12,6 @@ type ArchetypeId =
   | "minimal"
   | "athletic"
   | "curvy";
-
-const bikinis: { id: BikiniId; label: string }[] = [
-  { id: "aquarius", label: "Aquarius" },
-  { id: "aries", label: "Aries" },
-  { id: "cancer", label: "Cancer" },
-  { id: "capricorn", label: "Capricorn" },
-  { id: "gemini", label: "Gemini" },
-  { id: "leo", label: "Leo" },
-  { id: "libra", label: "Libra" },
-  { id: "pisces", label: "Pisces" },
-  { id: "sagittarius", label: "Sagittarius" },
-  { id: "scorpio", label: "Scorpio" },
-  { id: "taurus", label: "Taurus" },
-  { id: "virgo", label: "Virgo" },
-];
-
-const pareos: { id: PareoId; label: string }[] = [
-  { id: "none", label: "No Pareo" },
-  { id: "blue_pareo", label: "Blue Pareo" },
-  { id: "bordo_pareo", label: "Bordo Pareo" },
-  { id: "green_pareo", label: "Green Pareo" },
-  { id: "orange_pareo", label: "Orange Pareo" },
-  { id: "golden_pareo", label: "Golden Pareo" },
-  { id: "black_pareo", label: "Black Pareo" },
-  { id: "silver_pareo", label: "Silver Pareo" },
-  { id: "white_pareo", label: "White Pareo" },
-  { id: "pink_pareo", label: "Pink Pareo" },
-];
 
 const scenes: { id: SceneId; label: string; sub: string }[] = [
   { id: "beach", label: "Beach", sub: "Solar" },
@@ -81,30 +23,28 @@ const scenes: { id: SceneId; label: string; sub: string }[] = [
 const archetypes: {
   id: ArchetypeId;
   label: string;
-  skin: string;
+  tone: string;
   glow: string;
 }[] = [
-  { id: "light", label: "Light", skin: "#f3d7bc", glow: "rgba(165,210,255,0.22)" },
-  { id: "golden", label: "Golden", skin: "#d7a57a", glow: "rgba(255,208,122,0.22)" },
-  { id: "dark", label: "Dark", skin: "#6d4637", glow: "rgba(190,130,255,0.18)" },
-  { id: "cosmic", label: "Cosmic", skin: "#d9d8ff", glow: "rgba(140,160,255,0.22)" },
-  { id: "minimal", label: "Minimal", skin: "#ead4c2", glow: "rgba(210,220,255,0.16)" },
-  { id: "athletic", label: "Athletic", skin: "#c98f68", glow: "rgba(100,210,255,0.18)" },
-  { id: "curvy", label: "Curvy", skin: "#a66d53", glow: "rgba(255,160,210,0.18)" },
+  { id: "light", label: "Light", tone: "#f2d7c0", glow: "rgba(186,225,255,0.28)" },
+  { id: "golden", label: "Golden", tone: "#d9a879", glow: "rgba(255,210,125,0.24)" },
+  { id: "dark", label: "Dark", tone: "#6d4838", glow: "rgba(168,133,255,0.20)" },
+  { id: "cosmic", label: "Cosmic", tone: "#eaded1", glow: "rgba(150,162,255,0.24)" },
+  { id: "minimal", label: "Minimal", tone: "#efe6c7", glow: "rgba(228,236,255,0.18)" },
+  { id: "athletic", label: "Athletic", tone: "#d39562", glow: "rgba(106,209,255,0.18)" },
+  { id: "curvy", label: "Curvy", tone: "#b2774f", glow: "rgba(255,163,209,0.18)" },
 ];
 
-const sceneNotes: Record<SceneId, string> = {
-  beach: "Soft solar glow, sea breeze, luminous feminine ease.",
-  coffee: "Daylight elegance, city softness, elevated casual magnetism.",
-  night: "Dark glamour, magnetic silhouette, after-dark archetype energy.",
-  resort: "Luxury escape, fluid sensuality, goddess leisure atmosphere.",
+const sceneDescriptions: Record<SceneId, string> = {
+  beach: "Sunlit horizon, sea shimmer, warm skin glow, fluid feminine movement.",
+  coffee: "Elegant daylight, café reflections, soft luxury, city goddess energy.",
+  night: "After-dark magnetism, neon atmosphere, shadow and allure in balance.",
+  resort: "Palm silhouettes, velvet sunset, luxury leisure and divine softness.",
 };
 
 export default function PlayPage() {
   const [selectedArchetype, setSelectedArchetype] =
     useState<ArchetypeId>("cosmic");
-  const [selectedBikini, setSelectedBikini] = useState<BikiniId>("scorpio");
-  const [selectedPareo, setSelectedPareo] = useState<PareoId>("none");
   const [selectedScene, setSelectedScene] = useState<SceneId>("night");
 
   const currentArchetype = useMemo(
@@ -112,21 +52,18 @@ export default function PlayPage() {
     [selectedArchetype]
   );
 
-  const bikiniSrc = `/play/bikinis/${selectedBikini}.png`;
-  const pareoSrc =
-    selectedPareo === "none" ? "" : `/play/pareos/${selectedPareo}.png`;
   const sceneSrc = `/play/scenes/${selectedScene}.jpg`;
 
-  const stageGlow = useMemo(() => {
+  const ambientGlow = useMemo(() => {
     switch (selectedScene) {
       case "beach":
-        return "radial-gradient(circle at center, rgba(88,194,255,0.22) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
+        return "radial-gradient(circle at center, rgba(106,204,255,0.26) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.16) 100%)";
       case "coffee":
-        return "radial-gradient(circle at center, rgba(211,159,100,0.20) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
+        return "radial-gradient(circle at center, rgba(234,173,112,0.22) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.18) 100%)";
       case "night":
-        return "radial-gradient(circle at center, rgba(117,139,255,0.24) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.24) 100%)";
+        return "radial-gradient(circle at center, rgba(132,143,255,0.24) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.20) 100%)";
       case "resort":
-        return "radial-gradient(circle at center, rgba(220,129,255,0.18) 0%, rgba(255,255,255,0.03) 42%, rgba(0,0,0,0.22) 100%)";
+        return "radial-gradient(circle at center, rgba(221,134,255,0.18) 0%, rgba(255,255,255,0.04) 42%, rgba(0,0,0,0.18) 100%)";
     }
   }, [selectedScene]);
 
@@ -141,13 +78,15 @@ export default function PlayPage() {
           <Link href="/" style={styles.backLink}>
             ← UNIVERSE
           </Link>
-          <div style={styles.topbarRight}>CAELINUS PLAY V4.1</div>
+          <div style={styles.topbarRight}>CAELINUS PLAY FOUNDATION</div>
         </div>
 
         <section style={styles.hero}>
-          <div style={styles.heroPortal}>
-            <div style={styles.heroRingOne} />
-            <div style={styles.heroRingTwo} />
+          <div style={styles.heroVisual}>
+            <img src={sceneSrc} alt={selectedScene} style={styles.heroSceneImage} />
+            <div style={styles.heroSceneOverlay} />
+            <div style={styles.heroPortalOuter} />
+            <div style={styles.heroPortalInner} />
             <div style={styles.heroCore}>∞</div>
           </div>
 
@@ -172,100 +111,42 @@ export default function PlayPage() {
                   }}
                 >
                   <div style={{ ...styles.archGlow, background: item.glow }} />
-                  <div
-                    style={{
-                      ...styles.archetypeSilhouette,
-                      background: item.skin,
-                    }}
-                  />
+                  <div style={styles.archFigureWrap}>
+                    <div
+                      style={{
+                        ...styles.archFigure,
+                        background: item.tone,
+                      }}
+                    />
+                  </div>
                   <div style={styles.archetypeLabel}>{item.label}</div>
                 </button>
               );
             })}
           </div>
+
+          <button style={styles.centerNextButton}>NEXT</button>
         </section>
 
         <section style={styles.mainGrid}>
           <div style={styles.leftPanel}>
             <div style={styles.panelTitle}>SELECT YOUR AVATAR</div>
 
-            <div style={styles.controlSection}>
-              <div style={styles.controlLabel}>Bikini</div>
-              <div style={styles.controlGrid}>
-                {bikinis.map((item) => {
-                  const active = item.id === selectedBikini;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedBikini(item.id)}
-                      style={{
-                        ...styles.controlButton,
-                        ...(active ? styles.activeBlue : {}),
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            <div style={styles.leftAmbientCard}>
+              <img src={sceneSrc} alt={selectedScene} style={styles.leftAmbientImage} />
+              <div style={styles.leftAmbientOverlay} />
+              <div style={styles.leftPortalOuter} />
+              <div style={styles.leftPortalInner} />
 
-            <div style={styles.controlSection}>
-              <div style={styles.controlLabel}>Pareo</div>
-              <div style={styles.controlGrid}>
-                {pareos.map((item) => {
-                  const active = item.id === selectedPareo;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedPareo(item.id)}
-                      style={{
-                        ...styles.controlButton,
-                        ...(active ? styles.activePurple : {}),
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div style={styles.avatarStageMini}>
-              <img
-                src={sceneSrc}
-                alt={selectedScene}
-                style={styles.stageSceneImage}
-              />
-              <div style={styles.stageSceneOverlay} />
-              <div style={styles.avatarPortalMini} />
-
-              <div style={styles.canvasWrap}>
-                <Canvas camera={{ position: [0, 0.75, 5.5], fov: 24 }}>
-                  <ambientLight intensity={1.15} />
-                  <directionalLight position={[2.4, 5, 4]} intensity={2.1} />
-                  <pointLight position={[-2, 2, 3]} intensity={1.0} color="#b7d0ff" />
-
-                  <Float speed={2} rotationIntensity={0.08} floatIntensity={0.16}>
-                    <ElegantAvatar skinTone={currentArchetype.skin} compact />
-                  </Float>
-
-                  <OrbitControls
-                    enablePan={false}
-                    enableZoom={false}
-                    minAzimuthAngle={-0.22}
-                    maxAzimuthAngle={0.22}
-                    minPolarAngle={Math.PI / 2.12}
-                    maxPolarAngle={Math.PI / 1.98}
-                  />
-                </Canvas>
-              </div>
-
-              <div style={styles.overlayWrapMini}>
-                <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayerMini} />
-                {pareoSrc ? (
-                  <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayerMini} />
-                ) : null}
+              <div style={styles.leftAmbientContent}>
+                <div style={styles.leftAmbientLabel}>CAELINUS PRESENCE</div>
+                <div style={styles.leftAmbientHeadline}>
+                  Foundation first. Form later.
+                </div>
+                <p style={styles.leftAmbientText}>
+                  We are building the atmosphere, color language and luxury space
+                  of the Play experience before placing the avatar inside it.
+                </p>
               </div>
             </div>
 
@@ -304,7 +185,7 @@ export default function PlayPage() {
 
             <div style={styles.previewPanel}>
               <div style={styles.previewTitle}>
-                {selectedBikini.toUpperCase()} ARCHETYPE AI SCENE
+                {selectedScene.toUpperCase()} ARCHETYPE AI SCENE
               </div>
 
               <div style={styles.previewStage}>
@@ -317,46 +198,24 @@ export default function PlayPage() {
                 <div
                   style={{
                     ...styles.previewGlowOverlay,
-                    background: stageGlow,
+                    background: ambientGlow,
                   }}
                 />
-                <div style={styles.previewPortal} />
+                <div style={styles.previewPortalOuter} />
+                <div style={styles.previewPortalInner} />
 
-                <div style={styles.canvasWrapLarge}>
-                  <Canvas camera={{ position: [0, 0.72, 5.6], fov: 22 }}>
-                    <ambientLight intensity={1.1} />
-                    <directionalLight position={[2.4, 5, 4]} intensity={2.2} />
-                    <pointLight position={[-2, 2, 3]} intensity={1.0} color="#c5d8ff" />
-
-                    <Float speed={2} rotationIntensity={0.07} floatIntensity={0.14}>
-                      <ElegantAvatar skinTone={currentArchetype.skin} />
-                    </Float>
-
-                    <OrbitControls
-                      enablePan={false}
-                      enableZoom={false}
-                      minAzimuthAngle={-0.18}
-                      maxAzimuthAngle={0.18}
-                      minPolarAngle={Math.PI / 2.1}
-                      maxPolarAngle={Math.PI / 2}
-                    />
-                  </Canvas>
-                </div>
-
-                <div style={styles.overlayWrapLarge}>
-                  <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayerLarge} />
-                  {pareoSrc ? (
-                    <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayerLarge} />
-                  ) : null}
+                <div style={styles.previewMoodCard}>
+                  <div style={styles.previewMoodLabel}>SELECTED ARCHETYPE</div>
+                  <div style={styles.previewMoodValue}>{currentArchetype.label}</div>
                 </div>
               </div>
 
-              <p style={styles.previewText}>{sceneNotes[selectedScene]}</p>
+              <p style={styles.previewText}>{sceneDescriptions[selectedScene]}</p>
 
               <div style={styles.ctaRow}>
-                <button style={styles.ctaButton}>BUY THIS LOOK</button>
-                <button style={styles.ctaButton}>SAVE LOOK</button>
-                <button style={styles.ctaButton}>SHARE LOOK</button>
+                <button style={styles.ctaButton}>BUILD THIS MOOD</button>
+                <button style={styles.ctaButton}>SAVE DIRECTION</button>
+                <button style={styles.ctaButton}>SHARE VISION</button>
               </div>
             </div>
           </div>
@@ -366,107 +225,11 @@ export default function PlayPage() {
   );
 }
 
-function ElegantAvatar({
-  skinTone,
-  compact = false,
-}: {
-  skinTone: string;
-  compact?: boolean;
-}) {
-  const skin = new THREE.Color(skinTone);
-  const hair = new THREE.Color("#141018");
-  const scale = compact ? 0.9 : 1;
-
-  return (
-    <group scale={scale} position={[0, -1.45, 0]}>
-      <mesh position={[0, 2.45, 0]}>
-        <sphereGeometry args={[0.24, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0, 2.55, -0.03]} scale={[1.1, 1.35, 1.08]}>
-        <sphereGeometry args={[0.26, 48, 48]} />
-        <meshStandardMaterial color={hair} roughness={0.74} metalness={0.02} />
-      </mesh>
-
-      <mesh position={[0, 2.05, 0]}>
-        <cylinderGeometry args={[0.05, 0.06, 0.18, 28]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0, 1.35, 0]} scale={[0.78, 1.18, 0.54]}>
-        <sphereGeometry args={[0.52, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0, 0.47, 0]} scale={[0.42, 0.55, 0.36]}>
-        <sphereGeometry args={[0.52, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0, -0.18, 0]} scale={[0.92, 0.86, 0.56]}>
-        <sphereGeometry args={[0.54, 48, 48]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[-0.58, 1.28, 0]} rotation={[0, 0, -0.42]}>
-        <capsuleGeometry args={[0.065, 0.64, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[-0.78, 0.58, 0]} rotation={[0, 0, -0.1]}>
-        <capsuleGeometry args={[0.055, 0.58, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0.58, 1.28, 0]} rotation={[0, 0, 0.42]}>
-        <capsuleGeometry args={[0.065, 0.64, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0.78, 0.58, 0]} rotation={[0, 0, 0.1]}>
-        <capsuleGeometry args={[0.055, 0.58, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[-0.2, -1.05, 0]}>
-        <capsuleGeometry args={[0.08, 1.08, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0.2, -1.05, 0]}>
-        <capsuleGeometry args={[0.08, 1.08, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[-0.2, -2.08, 0]}>
-        <capsuleGeometry args={[0.065, 0.98, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0.2, -2.08, 0]}>
-        <capsuleGeometry args={[0.065, 0.98, 8, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[-0.2, -2.72, 0.08]} rotation={[0.12, 0, 0]} scale={[1.2, 0.55, 1.9]}>
-        <sphereGeometry args={[0.075, 24, 24]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-
-      <mesh position={[0.2, -2.72, 0.08]} rotation={[0.12, 0, 0]} scale={[1.2, 0.55, 1.9]}>
-        <sphereGeometry args={[0.075, 24, 24]} />
-        <meshStandardMaterial color={skin} roughness={0.62} metalness={0.04} />
-      </mesh>
-    </group>
-  );
-}
-
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
     background:
-      "radial-gradient(circle at top, #201a3a 0%, #0d1124 35%, #05060b 100%)",
+      "radial-gradient(circle at top, #211938 0%, #0b1020 36%, #05060a 100%)",
     color: "white",
     fontFamily: "Arial, sans-serif",
     position: "relative",
@@ -476,30 +239,30 @@ const styles: Record<string, React.CSSProperties> = {
     position: "absolute",
     inset: 0,
     background:
-      "radial-gradient(circle at 50% 0%, rgba(111,167,255,0.18) 0%, transparent 35%)",
+      "radial-gradient(circle at 50% 0%, rgba(123,173,255,0.16) 0%, transparent 34%)",
     pointerEvents: "none",
   },
   bgB: {
     position: "absolute",
-    top: -120,
+    top: -140,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 800,
-    height: 800,
+    width: 880,
+    height: 880,
     borderRadius: "50%",
-    background: "rgba(131,111,255,0.10)",
-    filter: "blur(90px)",
+    background: "rgba(128,111,255,0.10)",
+    filter: "blur(100px)",
     pointerEvents: "none",
   },
   bgC: {
     position: "absolute",
-    bottom: -160,
-    right: -80,
-    width: 420,
-    height: 420,
+    bottom: -180,
+    right: -90,
+    width: 460,
+    height: 460,
     borderRadius: "50%",
-    background: "rgba(236,132,255,0.10)",
-    filter: "blur(80px)",
+    background: "rgba(245,144,255,0.10)",
+    filter: "blur(90px)",
     pointerEvents: "none",
   },
   container: {
@@ -518,12 +281,12 @@ const styles: Record<string, React.CSSProperties> = {
   backLink: {
     color: "white",
     textDecoration: "none",
-    opacity: 0.82,
+    opacity: 0.84,
     letterSpacing: 1.5,
     fontSize: 14,
   },
   topbarRight: {
-    opacity: 0.7,
+    opacity: 0.72,
     letterSpacing: 3,
     fontSize: 13,
   },
@@ -531,36 +294,66 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
     marginBottom: 34,
   },
-  heroPortal: {
+  heroVisual: {
     position: "relative",
-    width: 158,
-    height: 158,
-    margin: "0 auto 18px",
+    width: "100%",
+    maxWidth: 980,
+    height: 280,
+    margin: "0 auto 20px",
+    borderRadius: 34,
+    overflow: "hidden",
+    border: "1px solid rgba(255,255,255,0.14)",
+    boxShadow: "0 20px 80px rgba(0,0,0,0.22)",
   },
-  heroRingOne: {
+  heroSceneImage: {
     position: "absolute",
     inset: 0,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.28)",
-    boxShadow: "0 0 45px rgba(126,173,255,0.25)",
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
-  heroRingTwo: {
+  heroSceneOverlay: {
     position: "absolute",
-    inset: 12,
+    inset: 0,
+    background:
+      "linear-gradient(180deg, rgba(8,10,18,0.12) 0%, rgba(8,10,18,0.36) 50%, rgba(8,10,18,0.58) 100%)",
+  },
+  heroPortalOuter: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    width: 240,
+    height: 240,
+    transform: "translate(-50%, -50%)",
     borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.16)",
+    border: "1px solid rgba(255,255,255,0.20)",
+    boxShadow: "0 0 70px rgba(132,164,255,0.25)",
+  },
+  heroPortalInner: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    width: 170,
+    height: 170,
+    transform: "translate(-50%, -50%)",
+    borderRadius: "50%",
+    border: "1px solid rgba(255,255,255,0.14)",
   },
   heroCore: {
     position: "absolute",
-    inset: 28,
+    top: "50%",
+    left: "50%",
+    width: 88,
+    height: 88,
+    transform: "translate(-50%, -50%)",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     background:
-      "radial-gradient(circle at 50% 35%, #8ed3ff 0%, #425ea7 45%, #11192d 100%)",
-    fontSize: 46,
-    boxShadow: "0 0 60px rgba(110,166,255,0.36)",
+      "radial-gradient(circle at 50% 35%, #95d6ff 0%, #4f67b8 46%, #10172c 100%)",
+    fontSize: 34,
+    boxShadow: "0 0 50px rgba(129,175,255,0.34)",
   },
   title: {
     margin: 0,
@@ -571,10 +364,10 @@ const styles: Record<string, React.CSSProperties> = {
   subtitle: {
     marginTop: 10,
     fontSize: 18,
-    opacity: 0.84,
+    opacity: 0.86,
   },
   enterButton: {
-    marginTop: 22,
+    marginTop: 20,
     border: "1px solid rgba(255,255,255,0.20)",
     background: "rgba(255,255,255,0.06)",
     color: "white",
@@ -583,10 +376,10 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     letterSpacing: 1.4,
     cursor: "pointer",
-    boxShadow: "0 0 24px rgba(121,150,255,0.16)",
+    boxShadow: "0 0 24px rgba(121,150,255,0.14)",
   },
   selectBlock: {
-    marginBottom: 28,
+    marginBottom: 30,
   },
   selectTitle: {
     textAlign: "center",
@@ -603,7 +396,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.14)",
     borderRadius: 24,
     background: "rgba(255,255,255,0.05)",
-    padding: "16px 12px",
+    padding: "18px 12px",
     cursor: "pointer",
     color: "white",
     position: "relative",
@@ -615,19 +408,22 @@ const styles: Record<string, React.CSSProperties> = {
   },
   archGlow: {
     position: "absolute",
-    inset: "auto 20px 28px 20px",
-    height: 24,
+    inset: "auto 18px 24px 18px",
+    height: 28,
     borderRadius: "50%",
     filter: "blur(14px)",
   },
-  archetypeSilhouette: {
-    width: 54,
-    height: 118,
-    margin: "0 auto 12px",
-    borderRadius: 999,
-    boxShadow: "0 10px 18px rgba(0,0,0,0.14)",
+  archFigureWrap: {
+    display: "flex",
+    justifyContent: "center",
     position: "relative",
     zIndex: 1,
+  },
+  archFigure: {
+    width: 58,
+    height: 122,
+    borderRadius: 999,
+    boxShadow: "0 12px 24px rgba(0,0,0,0.16)",
   },
   archetypeLabel: {
     textAlign: "center",
@@ -635,6 +431,19 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 1.2,
     position: "relative",
     zIndex: 1,
+    marginTop: 12,
+  },
+  centerNextButton: {
+    display: "block",
+    margin: "18px auto 0",
+    border: "1px solid rgba(255,255,255,0.18)",
+    background: "rgba(255,255,255,0.06)",
+    color: "white",
+    borderRadius: 999,
+    padding: "14px 32px",
+    fontSize: 15,
+    letterSpacing: 1.4,
+    cursor: "pointer",
   },
   mainGrid: {
     display: "grid",
@@ -660,105 +469,75 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 3,
     marginBottom: 18,
   },
-  controlSection: {
-    marginBottom: 18,
-  },
-  controlLabel: {
-    fontSize: 12,
-    letterSpacing: 2,
-    textTransform: "uppercase",
-    opacity: 0.64,
-    marginBottom: 10,
-  },
-  controlGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 10,
-  },
-  controlButton: {
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.05)",
-    color: "white",
-    borderRadius: 16,
-    padding: "12px 10px",
-    cursor: "pointer",
-    fontSize: 12,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-  activeBlue: {
-    background: "rgba(120,164,255,0.16)",
-    border: "1px solid rgba(176,210,255,0.36)",
-    boxShadow: "0 0 20px rgba(112,162,255,0.16)",
-  },
-  activePurple: {
-    background: "rgba(192,126,255,0.15)",
-    border: "1px solid rgba(232,191,255,0.34)",
-    boxShadow: "0 0 20px rgba(193,122,255,0.16)",
-  },
-  avatarStageMini: {
-    marginTop: 18,
-    height: 520,
-    borderRadius: 26,
-    border: "1px solid rgba(255,255,255,0.12)",
+  leftAmbientCard: {
     position: "relative",
+    height: 620,
+    borderRadius: 28,
     overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    border: "1px solid rgba(255,255,255,0.12)",
+    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.02)",
   },
-  stageSceneImage: {
+  leftAmbientImage: {
     position: "absolute",
     inset: 0,
     width: "100%",
     height: "100%",
     objectFit: "cover",
   },
-  stageSceneOverlay: {
+  leftAmbientOverlay: {
     position: "absolute",
     inset: 0,
     background:
-      "linear-gradient(180deg, rgba(8,10,18,0.18) 0%, rgba(8,10,18,0.34) 45%, rgba(8,10,18,0.64) 100%)",
+      "linear-gradient(180deg, rgba(7,10,18,0.16) 0%, rgba(7,10,18,0.34) 50%, rgba(7,10,18,0.72) 100%)",
   },
-  avatarPortalMini: {
+  leftPortalOuter: {
     position: "absolute",
-    width: 260,
-    height: 260,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.14)",
-    boxShadow: "0 0 50px rgba(118,156,255,0.18)",
+    top: "49%",
+    left: "50%",
+    width: 280,
+    height: 420,
+    transform: "translate(-50%, -50%)",
+    borderRadius: "160px / 220px",
+    border: "1px solid rgba(255,255,255,0.16)",
+    boxShadow: "0 0 80px rgba(137,170,255,0.18)",
   },
-  canvasWrap: {
+  leftPortalInner: {
     position: "absolute",
-    inset: 0,
-    zIndex: 1,
-  },
-  canvasWrapLarge: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 1,
-  },
-  overlayWrapMini: {
-    position: "absolute",
+    top: "49%",
+    left: "50%",
     width: 220,
-    height: 460,
-    zIndex: 3,
-    pointerEvents: "none",
+    height: 350,
+    transform: "translate(-50%, -50%)",
+    borderRadius: "130px / 180px",
+    border: "1px solid rgba(255,255,255,0.10)",
   },
-  overlayWrapLarge: {
+  leftAmbientContent: {
     position: "absolute",
-    width: 260,
-    height: 500,
-    zIndex: 3,
-    pointerEvents: "none",
+    left: 28,
+    right: 28,
+    bottom: 28,
+    zIndex: 2,
   },
-  avatarMiniWrap: {
-    position: "relative",
-    width: 260,
-    height: 460,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+  leftAmbientLabel: {
+    fontSize: 12,
+    letterSpacing: 2,
+    opacity: 0.75,
+    textTransform: "uppercase",
+    marginBottom: 10,
+  },
+  leftAmbientHeadline: {
+    fontSize: 34,
+    lineHeight: 1.1,
+    fontWeight: 700,
+    marginBottom: 12,
+    letterSpacing: 1,
+  },
+  leftAmbientText: {
+    margin: 0,
+    fontSize: 15,
+    lineHeight: 1.7,
+    maxWidth: 520,
+    opacity: 0.88,
   },
   nextButton: {
     marginTop: 18,
@@ -779,7 +558,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   sceneCard: {
     border: "1px solid rgba(255,255,255,0.14)",
-    borderRadius: 20,
+    borderRadius: 22,
     background: "rgba(255,255,255,0.05)",
     color: "white",
     padding: 0,
@@ -787,7 +566,7 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "left",
     overflow: "hidden",
     position: "relative",
-    minHeight: 160,
+    minHeight: 190,
   },
   sceneCardActive: {
     boxShadow: "0 0 24px rgba(193,122,255,0.16)",
@@ -808,20 +587,20 @@ const styles: Record<string, React.CSSProperties> = {
   },
   sceneTextWrap: {
     position: "absolute",
-    left: 16,
-    right: 16,
-    bottom: 14,
+    left: 18,
+    right: 18,
+    bottom: 16,
     zIndex: 2,
   },
   sceneLabel: {
-    fontSize: 22,
-    letterSpacing: 1.5,
+    fontSize: 28,
+    letterSpacing: 1.3,
   },
   sceneSub: {
-    marginTop: 4,
+    marginTop: 5,
     fontSize: 12,
     letterSpacing: 1.4,
-    opacity: 0.8,
+    opacity: 0.84,
     textTransform: "uppercase",
   },
   previewPanel: {
@@ -841,9 +620,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 22,
     position: "relative",
     overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     marginBottom: 14,
   },
   previewSceneImage: {
@@ -857,33 +633,64 @@ const styles: Record<string, React.CSSProperties> = {
     position: "absolute",
     inset: 0,
     background:
-      "linear-gradient(180deg, rgba(8,10,18,0.12) 0%, rgba(8,10,18,0.30) 45%, rgba(8,10,18,0.76) 100%)",
+      "linear-gradient(180deg, rgba(8,10,18,0.12) 0%, rgba(8,10,18,0.32) 45%, rgba(8,10,18,0.76) 100%)",
   },
   previewGlowOverlay: {
     position: "absolute",
     inset: 0,
   },
-  previewPortal: {
+  previewPortalOuter: {
     position: "absolute",
-    width: 300,
-    height: 300,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.16)",
-    boxShadow: "0 0 60px rgba(118,156,255,0.18)",
-  },
-  previewAvatarWrap: {
-    position: "relative",
+    top: "50%",
+    left: "50%",
     width: 320,
-    height: 500,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    height: 430,
+    transform: "translate(-50%, -50%)",
+    borderRadius: "180px / 240px",
+    border: "1px solid rgba(255,255,255,0.16)",
+    boxShadow: "0 0 100px rgba(132,164,255,0.20)",
+  },
+  previewPortalInner: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    width: 250,
+    height: 360,
+    transform: "translate(-50%, -50%)",
+    borderRadius: "150px / 210px",
+    border: "1px solid rgba(255,255,255,0.12)",
+  },
+  previewMoodCard: {
+    position: "absolute",
+    left: "50%",
+    bottom: 34,
+    transform: "translateX(-50%)",
+    minWidth: 220,
+    borderRadius: 22,
+    padding: "18px 22px",
+    textAlign: "center",
+    background: "rgba(7,10,18,0.46)",
+    border: "1px solid rgba(255,255,255,0.14)",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.22)",
+    backdropFilter: "blur(10px)",
+  },
+  previewMoodLabel: {
+    fontSize: 11,
+    letterSpacing: 2,
+    opacity: 0.72,
+    textTransform: "uppercase",
+    marginBottom: 8,
+  },
+  previewMoodValue: {
+    fontSize: 30,
+    letterSpacing: 2,
+    fontWeight: 700,
   },
   previewText: {
     margin: 0,
     fontSize: 14,
     lineHeight: 1.7,
-    opacity: 0.84,
+    opacity: 0.86,
   },
   ctaRow: {
     display: "flex",
@@ -901,41 +708,5 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 12,
     letterSpacing: 1.2,
     textTransform: "uppercase",
-  },
-  bikiniLayerMini: {
-    position: "absolute",
-    top: 122,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 96,
-    objectFit: "contain",
-    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
-  },
-  pareoLayerMini: {
-    position: "absolute",
-    top: 224,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 138,
-    objectFit: "contain",
-    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
-  },
-  bikiniLayerLarge: {
-    position: "absolute",
-    top: 138,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 108,
-    objectFit: "contain",
-    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
-  },
-  pareoLayerLarge: {
-    position: "absolute",
-    top: 252,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 154,
-    objectFit: "contain",
-    filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
   },
 };
