@@ -1015,14 +1015,7 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 1.2,
     textTransform: "uppercase",
   },
-  showroomSection: {
-  marginTop: 34,
-  border: "1px solid rgba(255,255,255,0.10)",
-  borderRadius: 30,
-  background: "rgba(255,255,255,0.05)",
-  backdropFilter: "blur(16px)",
-  padding: 24,
-},
+  
 showroomHeader: {
   marginBottom: 18,
 },
@@ -1158,6 +1151,14 @@ showroomButtonSecondary: {
   letterSpacing: 1.3,
   textTransform: "uppercase",
 },
+showroomSection: {
+  marginTop: 42,
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderRadius: 30,
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(16px)",
+  padding: 28,
+},
 comboRail: {
   display: "grid",
   gridTemplateColumns: "repeat(4, 1fr)",
@@ -1191,7 +1192,7 @@ comboCardOverlay: {
   position: "absolute",
   inset: 0,
   background:
-    "linear-gradient(180deg, rgba(10,12,20,0.08) 0%, rgba(10,12,20,0.44) 54%, rgba(10,12,20,0.82) 100%)",
+    "linear-gradient(180deg, rgba(10,12,20,0.08) 0%, rgba(10,12,20,0.30) 35%, rgba(10,12,20,0.72) 72%, rgba(10,12,20,0.92) 100%)",
 },
 comboCardText: {
   position: "absolute",
