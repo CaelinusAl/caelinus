@@ -25,7 +25,6 @@ type PareoId =
   | "orange_pareo";
 
 type SceneId = "beach" | "coffee" | "night" | "resort";
-
 type ArchetypeId =
   | "light"
   | "golden"
@@ -58,21 +57,21 @@ const pareos: { id: PareoId; label: string }[] = [
   { id: "orange_pareo", label: "Orange Pareo" },
 ];
 
-const scenes: { id: SceneId; label: string }[] = [
-  { id: "beach", label: "Beach" },
-  { id: "coffee", label: "Coffee" },
-  { id: "night", label: "Night" },
-  { id: "resort", label: "Resort" },
+const scenes: { id: SceneId; label: string; sub: string }[] = [
+  { id: "beach", label: "Beach", sub: "Solar" },
+  { id: "coffee", label: "Coffee", sub: "Daylight" },
+  { id: "night", label: "Night", sub: "Magnetic" },
+  { id: "resort", label: "Resort", sub: "Luxury" },
 ];
 
-const archetypes: { id: ArchetypeId; label: string; skin: string }[] = [
-  { id: "light", label: "Light", skin: "#f3d7bc" },
-  { id: "golden", label: "Golden", skin: "#d7a57a" },
-  { id: "dark", label: "Dark", skin: "#6d4637" },
-  { id: "cosmic", label: "Cosmic", skin: "#d9d8ff" },
-  { id: "minimal", label: "Minimal", skin: "#ead4c2" },
-  { id: "athletic", label: "Athletic", skin: "#c98f68" },
-  { id: "curvy", label: "Curvy", skin: "#a66d53" },
+const archetypes: { id: ArchetypeId; label: string; skin: string; glow: string }[] = [
+  { id: "light", label: "Light", skin: "#f3d7bc", glow: "rgba(165,210,255,0.22)" },
+  { id: "golden", label: "Golden", skin: "#d7a57a", glow: "rgba(255,208,122,0.22)" },
+  { id: "dark", label: "Dark", skin: "#6d4637", glow: "rgba(190,130,255,0.18)" },
+  { id: "cosmic", label: "Cosmic", skin: "#d9d8ff", glow: "rgba(140,160,255,0.22)" },
+  { id: "minimal", label: "Minimal", skin: "#ead4c2", glow: "rgba(210,220,255,0.16)" },
+  { id: "athletic", label: "Athletic", skin: "#c98f68", glow: "rgba(100,210,255,0.18)" },
+  { id: "curvy", label: "Curvy", skin: "#a66d53", glow: "rgba(255,160,210,0.18)" },
 ];
 
 const sceneNotes: Record<SceneId, string> = {
@@ -83,16 +82,13 @@ const sceneNotes: Record<SceneId, string> = {
 };
 
 export default function PlayPage() {
-  const [selectedArchetype, setSelectedArchetype] =
-    useState<ArchetypeId>("cosmic");
+  const [selectedArchetype, setSelectedArchetype] = useState<ArchetypeId>("cosmic");
   const [selectedBikini, setSelectedBikini] = useState<BikiniId>("scorpio");
-  const [selectedPareo, setSelectedPareo] = useState<PareoId>("blue_pareo");
+  const [selectedPareo, setSelectedPareo] = useState<PareoId>("none");
   const [selectedScene, setSelectedScene] = useState<SceneId>("night");
 
-  const skinTone = useMemo(
-    () =>
-      archetypes.find((item) => item.id === selectedArchetype)?.skin ??
-      "#f3d7bc",
+  const currentArchetype = useMemo(
+    () => archetypes.find((item) => item.id === selectedArchetype) ?? archetypes[0],
     [selectedArchetype]
   );
 
@@ -124,7 +120,7 @@ export default function PlayPage() {
           <Link href="/" style={styles.backLink}>
             ← UNIVERSE
           </Link>
-          <div style={styles.topbarRight}>CAELINUS PLAY V3</div>
+          <div style={styles.topbarRight}>CAELINUS PLAY V3.1</div>
         </div>
 
         <section style={styles.hero}>
@@ -155,12 +151,8 @@ export default function PlayPage() {
                     ...(active ? styles.archetypeCardActive : {}),
                   }}
                 >
-                  <div
-                    style={{
-                      ...styles.archetypeSilhouette,
-                      background: item.skin,
-                    }}
-                  />
+                  <div style={{ ...styles.archGlow, background: item.glow }} />
+                  <div style={{ ...styles.archetypeSilhouette, background: item.skin }} />
                   <div style={styles.archetypeLabel}>{item.label}</div>
                 </button>
               );
@@ -218,7 +210,7 @@ export default function PlayPage() {
               <div style={styles.avatarPortalMini} />
               <div style={styles.avatarMiniWrap}>
                 <FashionAvatar
-                  skinTone={skinTone}
+                  skinTone={currentArchetype.skin}
                   bikiniSrc={bikiniSrc}
                   pareoSrc={pareoSrc}
                   compact
@@ -246,6 +238,7 @@ export default function PlayPage() {
                   >
                     <div style={styles.sceneThumb} />
                     <div style={styles.sceneLabel}>{scene.label}</div>
+                    <div style={styles.sceneSub}>{scene.sub}</div>
                   </button>
                 );
               })}
@@ -256,16 +249,11 @@ export default function PlayPage() {
                 {selectedBikini.toUpperCase()} ARCHETYPE AI SCENE
               </div>
 
-              <div
-                style={{
-                  ...styles.previewStage,
-                  background: stageGlow,
-                }}
-              >
+              <div style={{ ...styles.previewStage, background: stageGlow }}>
                 <div style={styles.previewPortal} />
                 <div style={styles.previewAvatarWrap}>
                   <FashionAvatar
-                    skinTone={skinTone}
+                    skinTone={currentArchetype.skin}
                     bikiniSrc={bikiniSrc}
                     pareoSrc={pareoSrc}
                   />
@@ -307,6 +295,8 @@ function FashionAvatar({
         transform: `scale(${scale})`,
       }}
     >
+      <div style={styles.avatarAura} />
+
       <div style={{ ...styles.avatarHead, background: skinTone }} />
       <div style={{ ...styles.avatarNeck, background: skinTone }} />
       <div style={{ ...styles.avatarChest, background: skinTone }} />
@@ -326,7 +316,6 @@ function FashionAvatar({
       <div style={{ ...styles.footRight, background: skinTone }} />
 
       <img src={bikiniSrc} alt="Bikini layer" style={styles.bikiniLayer} />
-
       {pareoSrc ? (
         <img src={pareoSrc} alt="Pareo layer" style={styles.pareoLayer} />
       ) : null}
@@ -478,10 +467,19 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "16px 12px",
     cursor: "pointer",
     color: "white",
+    position: "relative",
+    overflow: "hidden",
   },
   archetypeCardActive: {
     boxShadow: "0 0 24px rgba(144,164,255,0.22)",
     background: "rgba(124,153,255,0.12)",
+  },
+  archGlow: {
+    position: "absolute",
+    inset: "auto 20px 28px 20px",
+    height: 24,
+    borderRadius: "50%",
+    filter: "blur(14px)",
   },
   archetypeSilhouette: {
     width: 54,
@@ -489,11 +487,15 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 auto 12px",
     borderRadius: 999,
     boxShadow: "0 10px 18px rgba(0,0,0,0.14)",
+    position: "relative",
+    zIndex: 1,
   },
   archetypeLabel: {
     textAlign: "center",
     fontSize: 14,
     letterSpacing: 1.2,
+    position: "relative",
+    zIndex: 1,
   },
   mainGrid: {
     display: "grid",
@@ -626,6 +628,13 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 22,
     letterSpacing: 1.5,
   },
+  sceneSub: {
+    marginTop: 4,
+    fontSize: 12,
+    letterSpacing: 1.4,
+    opacity: 0.66,
+    textTransform: "uppercase",
+  },
   previewPanel: {
     border: "1px solid rgba(255,255,255,0.12)",
     borderRadius: 24,
@@ -673,6 +682,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     gap: 10,
     marginTop: 16,
+    flexWrap: "wrap",
   },
   ctaButton: {
     border: "1px solid rgba(255,255,255,0.18)",
@@ -691,158 +701,182 @@ const styles: Record<string, React.CSSProperties> = {
     height: 560,
     transformOrigin: "center center",
   },
+  avatarAura: {
+    position: "absolute",
+    inset: "120px 20px 140px 20px",
+    borderRadius: "50%",
+    background: "rgba(140,166,255,0.10)",
+    filter: "blur(22px)",
+  },
   avatarHead: {
     position: "absolute",
     top: 18,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 76,
-    height: 90,
+    width: 68,
+    height: 82,
     borderRadius: "46% 46% 42% 42%",
     boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
+    zIndex: 2,
   },
   avatarNeck: {
     position: "absolute",
-    top: 100,
+    top: 94,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 18,
-    height: 24,
+    width: 16,
+    height: 22,
     borderRadius: 10,
+    zIndex: 2,
   },
   avatarChest: {
     position: "absolute",
-    top: 118,
+    top: 112,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 116,
-    height: 160,
+    width: 104,
+    height: 150,
     borderRadius: "48% 48% 42% 42%",
     boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
+    zIndex: 2,
   },
   avatarWaist: {
     position: "absolute",
-    top: 242,
+    top: 236,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 74,
-    height: 58,
+    width: 62,
+    height: 52,
     borderRadius: "44%",
+    zIndex: 2,
   },
   avatarHips: {
     position: "absolute",
-    top: 282,
+    top: 272,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 140,
-    height: 106,
+    width: 130,
+    height: 102,
     borderRadius: "46% 46% 42% 42%",
     boxShadow: "0 10px 18px rgba(0,0,0,0.08)",
+    zIndex: 2,
   },
   armLeftUpper: {
     position: "absolute",
-    top: 140,
-    left: 28,
-    width: 24,
-    height: 108,
+    top: 132,
+    left: 34,
+    width: 22,
+    height: 100,
     borderRadius: 20,
     transform: "rotate(12deg)",
+    zIndex: 2,
   },
   armLeftLower: {
     position: "absolute",
-    top: 238,
-    left: 34,
-    width: 20,
-    height: 92,
+    top: 222,
+    left: 40,
+    width: 18,
+    height: 86,
     borderRadius: 20,
     transform: "rotate(4deg)",
+    zIndex: 2,
   },
   armRightUpper: {
     position: "absolute",
-    top: 140,
-    right: 28,
-    width: 24,
-    height: 108,
+    top: 132,
+    right: 34,
+    width: 22,
+    height: 100,
     borderRadius: 20,
     transform: "rotate(-12deg)",
+    zIndex: 2,
   },
   armRightLower: {
     position: "absolute",
-    top: 238,
-    right: 34,
-    width: 20,
-    height: 92,
+    top: 222,
+    right: 40,
+    width: 18,
+    height: 86,
     borderRadius: 20,
     transform: "rotate(-4deg)",
+    zIndex: 2,
   },
   legLeftUpper: {
     position: "absolute",
-    top: 368,
-    left: 76,
-    width: 28,
-    height: 108,
-    borderRadius: 20,
+    top: 360,
+    left: 82,
+    width: 24,
+    height: 102,
+    borderRadius: 18,
+    zIndex: 2,
   },
   legRightUpper: {
     position: "absolute",
-    top: 368,
-    right: 76,
-    width: 28,
-    height: 108,
-    borderRadius: 20,
+    top: 360,
+    right: 82,
+    width: 24,
+    height: 102,
+    borderRadius: 18,
+    zIndex: 2,
   },
   legLeftLower: {
     position: "absolute",
-    top: 470,
-    left: 80,
-    width: 24,
-    height: 102,
-    borderRadius: 20,
+    top: 456,
+    left: 85,
+    width: 20,
+    height: 94,
+    borderRadius: 18,
+    zIndex: 2,
   },
   legRightLower: {
     position: "absolute",
-    top: 470,
-    right: 80,
-    width: 24,
-    height: 102,
-    borderRadius: 20,
+    top: 456,
+    right: 85,
+    width: 20,
+    height: 94,
+    borderRadius: 18,
+    zIndex: 2,
   },
   footLeft: {
     position: "absolute",
-    top: 554,
-    left: 74,
-    width: 34,
-    height: 14,
+    top: 540,
+    left: 78,
+    width: 30,
+    height: 12,
     borderRadius: 12,
+    zIndex: 2,
   },
   footRight: {
     position: "absolute",
-    top: 554,
-    right: 74,
-    width: 34,
-    height: 14,
+    top: 540,
+    right: 78,
+    width: 30,
+    height: 12,
     borderRadius: 12,
+    zIndex: 2,
   },
   bikiniLayer: {
     position: "absolute",
-    top: 150,
+    top: 138,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 152,
-    maxHeight: 236,
+    width: 136,
+    maxHeight: 220,
     objectFit: "contain",
     pointerEvents: "none",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.22))",
+    zIndex: 3,
   },
   pareoLayer: {
     position: "absolute",
-    top: 286,
+    top: 262,
     left: "50%",
     transform: "translateX(-50%)",
-    width: 190,
-    maxHeight: 250,
+    width: 176,
+    maxHeight: 232,
     objectFit: "contain",
     pointerEvents: "none",
     filter: "drop-shadow(0 12px 20px rgba(0,0,0,0.18))",
+    zIndex: 4,
   },
 };
